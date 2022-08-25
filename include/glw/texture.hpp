@@ -1,13 +1,7 @@
-/*
- * Copyright (C) 2021-2022 Konstanty Misiak
- *
- * SPDX-License-Identifier: MIT
- */
-
 #pragma once
-#include "jng/core/base.hpp"
+#include <cstdint>
 
-namespace jng {
+namespace glw {
 
     enum class TextureFormat {
         None,
@@ -42,26 +36,26 @@ namespace jng {
     public:
         struct Properties {
             TextureSpecification specification = TextureFormat::None;
-            u32 width;
-            u32 height;
+            uint32_t width;
+            uint32_t height;
         };
 
-        explicit Texture(const char* path);
+        //explicit Texture(const char* path);
         explicit Texture(const Properties& properties);
         ~Texture();
 
-        void bind(u32 slot) const;
-        void unbind(u32 slot) const;
-        void setData(void* data, size_t size) const;
+        void bind(uint32_t slot) const;
+        void unbind(uint32_t slot) const;
+        void setData(const void* data, size_t size, uint32_t xoffset = 0, uint32_t yoffset = 0, uint32_t width = 0, uint32_t height = 0) const;
 
-        u32 getID() const { return m_id; }
+        uint32_t getID() const { return m_id; }
         const Properties& getProperties() const { return m_properties; }
-        void* getRendererID() { return reinterpret_cast<void*>(static_cast<u64>(m_id)); }
+        const void* getRendererID() const { return reinterpret_cast<const void*>(static_cast<uintptr_t>(m_id)); }
     private:
         void createTexture();
 
         Properties m_properties;
-        u32 m_id;
+        uint32_t m_id;
     };
 
-} // namespace jng
+} // namespace glw

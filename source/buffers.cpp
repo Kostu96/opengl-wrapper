@@ -1,14 +1,8 @@
-/*
- * Copyright (C) 2021-2022 Konstanty Misiak
- *
- * SPDX-License-Identifier: MIT
- */
-
-#include "renderer/buffers.hpp"
+#include "glw/buffers.hpp"
 
 #include <glad/gl.h>
 
-namespace jng {
+namespace glw {
 
 #pragma region VertexBuffer
     VertexBuffer::VertexBuffer(const void* vertices, size_t size)
@@ -45,20 +39,19 @@ namespace jng {
 #pragma endregion
 
 #pragma region IndexBuffer
-    static size_t indexTypeToSize(RendererAPI::IndexType type)
+    static size_t indexTypeToSize(IndexBuffer::IndexType type)
     {
         switch (type)
         {
-        case RendererAPI::IndexType::U8:  return sizeof(u8);
-        case RendererAPI::IndexType::U16: return sizeof(u16);
-        case RendererAPI::IndexType::U32: return sizeof(u32);
+        case IndexBuffer::IndexType::U8:  return sizeof(uint8_t);
+        case IndexBuffer::IndexType::U16: return sizeof(uint16_t);
+        case IndexBuffer::IndexType::U32: return sizeof(uint32_t);
         }
 
-        JNG_CORE_ASSERT(false, "This should never be triggered!");
         return 0;
     }
 
-    IndexBuffer::IndexBuffer(const void* indices, u32 count, RendererAPI::IndexType type) :
+    IndexBuffer::IndexBuffer(const void* indices, uint32_t count, IndexType type) :
         m_count{ count },
         m_indexType{ type }
     {
@@ -94,12 +87,12 @@ namespace jng {
         glDeleteBuffers(1, &m_id);
     }
 
-    void UniformBuffer::bind(u32 slot) const
+    void UniformBuffer::bind(uint32_t slot) const
     {
         glBindBufferBase(GL_UNIFORM_BUFFER, slot, m_id);
     }
 
-    void UniformBuffer::unbind(u32 slot) const
+    void UniformBuffer::unbind(uint32_t slot) const
     {
         glBindBufferBase(GL_UNIFORM_BUFFER, slot, 0);
     }
@@ -110,4 +103,4 @@ namespace jng {
     }
 #pragma endregion
 
-} // namespace jng
+} // namespace glw

@@ -1,19 +1,13 @@
-/*
- * Copyright (C) 2021-2022 Konstanty Misiak
- *
- * SPDX-License-Identifier: MIT
- */
-
-#include "renderer/texture.hpp"
-
-#include "core/base_internal.hpp"
+#include "glw/texture.hpp"
 
 #include <glad/gl.h>
-#include <stb/stb_image.h>
+//#include <stb/stb_image.h>
 
-namespace jng {
+#include <cassert>
 
-    static u32 textureFormatToGLEnum(TextureFormat format)
+namespace glw {
+
+    static uint32_t textureFormatToGLEnum(TextureFormat format)
     {
         switch (format)
         {
@@ -22,11 +16,10 @@ namespace jng {
         case TextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
         }
 
-        JNG_CORE_ASSERT(false, "This should never be triggered!");
         return 0;
     }
 
-    Texture::Texture(const char* path)
+    /*Texture::Texture(const char* path)
     {
         int width, height, channels;
         stbi_uc* data = stbi_load(path, &width, &height, &channels, 4);
@@ -40,7 +33,7 @@ namespace jng {
         glTextureSubImage2D(m_id, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
-    }
+    }*/
 
     Texture::Texture(const Properties& properties) :
         m_properties{ properties }
@@ -53,22 +46,29 @@ namespace jng {
         glDeleteTextures(1, &m_id);
     }
 
-    void Texture::bind(u32 slot) const
+    void Texture::bind(uint32_t slot) const
     {
         glBindTextureUnit(slot, m_id);
     }
 
-    void Texture::unbind(u32 slot) const
+    void Texture::unbind(uint32_t slot) const
     {
         glBindTextureUnit(slot, 0);
     }
 
-    void Texture::setData(void* data, [[maybe_unused]] size_t size) const
+    void Texture::setData(const void* data, size_t size, uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height) const
     {
-        JNG_CORE_ASSERT(size == static_cast<size_t>(m_properties.width) * static_cast<size_t>(m_properties.height) * 4,
-            "Data must be entire texture!");
+        if (width == 0) width = m_properties.width;
+        if (height == 0) height = m_properties.height;
 
-        glTextureSubImage2D(m_id, 0, 0, 0, static_cast<int>(m_properties.width), static_cast<int>(m_properties.height), GL_RGBA, GL_UNSIGNED_BYTE, data);
+        assert(width * height == size);
+
+        glTextureSubImage2D(
+            m_id, 0,
+            xoffset, yoffset,
+            width, height,
+            GL_RGBA, GL_UNSIGNED_BYTE, data
+        );
     }
 
     void Texture::createTexture()

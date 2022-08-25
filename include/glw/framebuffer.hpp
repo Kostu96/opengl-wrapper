@@ -1,22 +1,18 @@
-/*
- * Copyright (C) 2022 Konstanty Misiak
- *
- * SPDX-License-Identifier: MIT
- */
-
 #pragma once
-#include "jng/core/base.hpp"
-#include "jng/renderer/texture.hpp"
+#include "glw/texture.hpp"
 
-namespace jng {
+#include <cstdint>
+#include <vector>
+
+namespace glw {
 
     class Framebuffer final
     {
     public:
         struct Properties {
-            u32 width;
-            u32 height;
-            u32 samples = 1;
+            uint32_t width;
+            uint32_t height;
+            uint32_t samples = 1;
             std::vector<TextureSpecification> attachmentsSpecifications;
             
             bool swapChainTarget = false;
@@ -28,21 +24,19 @@ namespace jng {
         void bind() const;
         void unbind() const;
 
-        void resize(u32 width, u32 height);
-        u32 readPixel(u32 colorAttachmentIndex, u32 x, u32 y) const;
-        void clearAttachment(u32 attachmentIndex, int value) const;
-        void clearAttachment(u32 attachmentIndex, float value) const;
+        void resize(uint32_t width, uint32_t height);
+        uint32_t readPixel(uint32_t colorAttachmentIndex, uint32_t x, uint32_t y) const;
+        void clearAttachment(uint32_t attachmentIndex, int value) const;
+        void clearAttachment(uint32_t attachmentIndex, float value) const;
         
-        const std::vector<Ref<Texture>>& getAttachments() const { return m_attachments; }
+        const std::vector<Texture>& getAttachments() const { return m_attachments; }
         const Properties& getProperties() const { return m_properties; }
     private:
         void recreate();
 
         Properties m_properties;
-        u32 m_ID;
-        std::vector<Ref<Texture>> m_attachments;
-        u32 m_colorAttachmentID;
-        u32 m_depthAttachmentID;
+        uint32_t m_ID;
+        std::vector<Texture> m_attachments;
     };
 
 } // namespace jng

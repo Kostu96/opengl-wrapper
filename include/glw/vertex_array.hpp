@@ -1,13 +1,8 @@
-/*
- * Copyright (C) 2021-2022 Konstanty Misiak
- *
- * SPDX-License-Identifier: MIT
- */
-
 #pragma once
-#include "jng/core/base.hpp"
+#include <cstdint>
+#include <vector>
 
-namespace jng {
+namespace glw {
 
     class IndexBuffer;
     class VertexBuffer;
@@ -17,17 +12,17 @@ namespace jng {
     {
         enum class DataType
         {
-            Float, Float2, Float3, Float4,
-            Int,   Int2,   Int3,   Int4,
-            UInt,  UInt2,  UInt3,  UInt4,
-            UInt4x8
+            F32, F32_2, F32_3, F32_4,
+            S32, S32_2, S32_3, S32_4,
+            U8_4,
+            U16_2,
+            U32, U32_2, U32_3, U32_4,
         };
 
-        LayoutElement(DataType inType, const char* inName, bool inPassAsFloat = false, bool inNormalized = false);
+        LayoutElement(DataType inType, bool inPassAsFloat = false, bool inNormalized = false);
 
         static size_t dataTypeToSize(DataType type);
 
-        std::string name;
         DataType type;
         size_t size;
         uintptr_t offset;
@@ -46,31 +41,31 @@ namespace jng {
         VertexLayout(const VertexLayout& other);
 
         const ContainerType& getElements() const { return m_elements; }
-        u32 getStride() const { return m_stride; }
+        uint32_t getStride() const { return m_stride; }
 
         ContainerConstInterator begin() const { return m_elements.begin(); }
         ContainerConstInterator end() const { return m_elements.end(); }
     private:
         ContainerType m_elements;
-        u32 m_stride;
+        uint32_t m_stride;
     };
 
     class VertexArray final
     {
     public:
-        VertexArray(const Ref<VertexBuffer>& vbo, const VertexLayout& layout);
+        VertexArray(const VertexBuffer& vbo, const VertexLayout& layout);
         ~VertexArray();
 
         void bind() const;
         void unbind() const;
 
-        const Ref<VertexBuffer>& getVertexBuffer() const { return m_VBO; }
-        void setIndexBuffer(const Ref<IndexBuffer>& ibo);
-        const Ref<IndexBuffer>& getIndexBuffer() const { return m_IBO; }
+        const VertexBuffer& getVertexBuffer() const { return m_VBO; }
+        void setIndexBuffer(const IndexBuffer& ibo);
+        const IndexBuffer& getIndexBuffer() const { return *m_IBO; }
     private:
-        u32 m_id;
-        Ref<VertexBuffer> m_VBO;
-        Ref<IndexBuffer> m_IBO;
+        uint32_t m_id;
+        const VertexBuffer& m_VBO;
+        const IndexBuffer* m_IBO;
     };
 
-} // namespace jng
+} // namespace glw

@@ -1,13 +1,7 @@
-/*
- * Copyright (C) 2021-2022 Konstanty Misiak
- *
- * SPDX-License-Identifier: MIT
- */
-
 #pragma once
-#include "jng/core/base.hpp"
+#include <cstdint>
 
-namespace jng {
+namespace glw {
 
     class Shader final
     {
@@ -17,23 +11,18 @@ namespace jng {
             Fragment
         };
 
-        Shader(const std::filesystem::path& vertexShaderFilename, const std::filesystem::path& fragmentShaderFilename);
+        Shader() = default;
         ~Shader();
+
+        void createFromFile(const char* vertexShaderFilename, const char* fragmentShaderFilename);
+        void createFromSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
         void bind() const;
         void unbind() const;
     private:
-        std::filesystem::path getCacheDirectory() const;
-        void createCacheDirectoryIfNeeded() const;
-        std::vector<u32> compileToSPIRV(const std::filesystem::path& filename, Type type) const;
-        static const char* shaderTypeToHashFileExtension(Type type);
-        static const char* shaderTypeToCachedVlkFileExtension(Type type);
-        static u32 shaderTypeToShaderCKind(Type type);
+        uint32_t compileShader(const char* source, Type type) const;
 
-        u32 compileShader(const std::filesystem::path& filename, Type type) const;
-
-        mutable bool m_isCacheDirty = true;
-        u32 m_id;
+        uint32_t m_id = static_cast<uint32_t>(-1);
     };
 
-} // namespace jng
+} // namespace glw
