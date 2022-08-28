@@ -12,9 +12,9 @@ namespace glw {
         {
         case TextureFormat::RGBA8: return GL_RGBA8;
         case TextureFormat::R32:   return GL_RED_INTEGER;
+        default:
+            return 0;
         }
-
-        return 0;
     }
 
     static bool isDepthAttachment(TextureFormat format)
@@ -26,9 +26,9 @@ namespace glw {
             return false;
         case TextureFormat::Depth24Stencil8:
             return true;
+        default:
+            return false;
         }
-
-        return false;
     }
 
     Framebuffer::Framebuffer(const Properties& properties) :

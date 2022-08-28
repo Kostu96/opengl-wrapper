@@ -14,9 +14,9 @@ namespace glw {
         case TextureFormat::RGBA8:           return GL_RGBA8;
         case TextureFormat::R32:             return GL_R32I;
         case TextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+        default:
+            return 0;
         }
-
-        return 0;
     }
 
     /*Texture::Texture(const char* path)

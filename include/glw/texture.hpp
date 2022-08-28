@@ -1,11 +1,12 @@
 #pragma once
+#include <cstddef>
 #include <cstdint>
 
 namespace glw {
 
     enum class TextureFormat {
         None,
-
+        
         RGBA8, // normalized integer
         R32,   // unsigned integer
 
