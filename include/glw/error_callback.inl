@@ -1,12 +1,16 @@
 static void GLAPIENTRY OGLErrorCallback(
     GLenum source,
     GLenum type,
-    GLuint /*id*/,
+    GLuint id,
     GLenum severity,
     GLsizei /*length*/,
     const GLchar* message,
     const void* /*userParam*/)
 {
+    switch (id) {
+    case 131185: return;
+    }
+
     const char* sourceStr = "";
     switch (source) {
     case GL_DEBUG_SOURCE_API: sourceStr = "OGL API Call"; break;
@@ -38,5 +42,6 @@ static void GLAPIENTRY OGLErrorCallback(
     case GL_DEBUG_SEVERITY_NOTIFICATION: severityStr = "Notification"; break;
     }
 
-    std::cerr << "OGLdebug: " << sourceStr << " | Type: " << typeStr << severityStr << '\n' << message << '\n';
+    std::cerr << "OGLdebug: " << sourceStr << " | Type: " << typeStr << severityStr << " | ID: " << std::dec << id << '\n'
+              << message << '\n';
 }
