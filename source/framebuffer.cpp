@@ -45,14 +45,11 @@ namespace glw {
     void Framebuffer::bind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
-        glViewport(0, 0, m_properties.width, m_properties.height);
-        glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);
     }
 
     void Framebuffer::unbind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
     }
 
     void Framebuffer::resize(uint32_t width, uint32_t height)

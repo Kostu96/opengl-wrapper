@@ -14,6 +14,9 @@ namespace glw {
         void bind() const;
         void unbind() const;
         void setData(const void* data, size_t size) const;
+
+        VertexBuffer(const VertexBuffer&) = delete;
+        VertexBuffer& operator=(const VertexBuffer&) = delete;
     private:
         uint32_t m_id;
     };
@@ -34,6 +37,9 @@ namespace glw {
         void unbind() const;
         uint32_t getCount() const { return m_count; }
         IndexType getIndexType() const { return m_indexType; }
+
+        IndexBuffer(const IndexBuffer&) = delete;
+        IndexBuffer& operator=(const IndexBuffer&) = delete;
     private:
         uint32_t m_id;
         uint32_t m_count;
@@ -49,6 +55,9 @@ namespace glw {
         void bind(uint32_t slot) const;
         void unbind(uint32_t slot) const;
         void setData(const void* data, size_t size, size_t offset = 0) const;
+
+        UniformBuffer(const UniformBuffer&) = delete;
+        UniformBuffer& operator=(const UniformBuffer&) = delete;
     private:
         uint32_t m_id;
     };

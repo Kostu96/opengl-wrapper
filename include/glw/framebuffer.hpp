@@ -31,6 +31,9 @@ namespace glw {
         
         const std::vector<Texture>& getAttachments() const { return m_attachments; }
         const Properties& getProperties() const { return m_properties; }
+
+        Framebuffer(const Framebuffer&) = delete;
+        Framebuffer& operator=(const Framebuffer&) = delete;
     private:
         void recreate();
 

@@ -62,6 +62,9 @@ namespace glw {
         const VertexBuffer& getVertexBuffer() const { return m_VBO; }
         void setIndexBuffer(const IndexBuffer& ibo);
         const IndexBuffer& getIndexBuffer() const { return *m_IBO; }
+
+        VertexArray(const VertexArray&) = delete;
+        VertexArray& operator=(const VertexArray&) = delete;
     private:
         uint32_t m_id;
         const VertexBuffer& m_VBO;

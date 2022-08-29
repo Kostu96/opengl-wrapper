@@ -19,6 +19,9 @@ namespace glw {
 
         void bind() const;
         void unbind() const;
+
+        Shader(const Shader&) = delete;
+        Shader& operator=(const Shader&) = delete;
     private:
         uint32_t compileShader(const char* source, Type type) const;
 

@@ -2,18 +2,18 @@ static void GLAPIENTRY OGLErrorCallback(
     GLenum source,
     GLenum type,
     GLuint /*id*/,
-    GLenum /*severity*/,
+    GLenum severity,
     GLsizei /*length*/,
     const GLchar* message,
     const void* /*userParam*/)
 {
     const char* sourceStr = "";
     switch (source) {
-    case GL_DEBUG_SOURCE_API: sourceStr = "Call to the OpenGL API"; break;
-    case GL_DEBUG_SOURCE_WINDOW_SYSTEM: sourceStr = "Call to a window-system API"; break;
-    case GL_DEBUG_SOURCE_SHADER_COMPILER: sourceStr = "Compiler for a shading language"; break;
-    case GL_DEBUG_SOURCE_THIRD_PARTY: sourceStr = "Application associated with OpenGL"; break;
-    case GL_DEBUG_SOURCE_APPLICATION: sourceStr = "User of this application"; break;
+    case GL_DEBUG_SOURCE_API: sourceStr = "OGL API Call"; break;
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM: sourceStr = "Window System API Call"; break;
+    case GL_DEBUG_SOURCE_SHADER_COMPILER: sourceStr = "Shader Compiler"; break;
+    case GL_DEBUG_SOURCE_THIRD_PARTY: sourceStr = "Third Party"; break;
+    case GL_DEBUG_SOURCE_APPLICATION: sourceStr = "This Application"; break;
     case GL_DEBUG_SOURCE_OTHER: sourceStr = "Unknown"; break;
     }
 
@@ -30,5 +30,13 @@ static void GLAPIENTRY OGLErrorCallback(
     case GL_DEBUG_TYPE_OTHER: typeStr = "Unknown"; break;
     }
 
-    std::cerr << "OpenGL debug | " << sourceStr << " | Type: " << typeStr << '\n' << message;
+    const char* severityStr = "";
+    switch (severity) {
+    case GL_DEBUG_SEVERITY_HIGH: severityStr = "High"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM: severityStr = "Medium"; break;
+    case GL_DEBUG_SEVERITY_LOW: severityStr = "Low"; break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION: severityStr = "Notification"; break;
+    }
+
+    std::cerr << "OGLdebug: " << sourceStr << " | Type: " << typeStr << severityStr << '\n' << message << '\n';
 }

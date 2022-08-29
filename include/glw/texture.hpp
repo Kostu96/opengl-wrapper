@@ -19,8 +19,7 @@ namespace glw {
     };
 
     enum class TextureWrapMode {
-        Clamp,
-        Wrap
+        Clamp
     };
 
     struct TextureSpecification {
@@ -30,6 +29,8 @@ namespace glw {
         TextureWrapMode wrapMode = TextureWrapMode::Clamp;
 
         TextureSpecification(TextureFormat inFormat) : format{ inFormat } {}
+        TextureSpecification(TextureFormat inFormat, TextureFilter inMinFilter, TextureFilter inMagFilter, TextureWrapMode inWrapMode) :
+            format{ inFormat }, minificationFilter{ inMinFilter }, magnificationFilter{ inMagFilter }, wrapMode{ inWrapMode } {}
     };
 
     class Texture final
@@ -43,6 +44,7 @@ namespace glw {
 
         //explicit Texture(const char* path);
         explicit Texture(const Properties& properties);
+        Texture(Texture&& other) noexcept;
         ~Texture();
 
         void bind(uint32_t slot) const;
@@ -52,6 +54,9 @@ namespace glw {
         uint32_t getID() const { return m_id; }
         const Properties& getProperties() const { return m_properties; }
         const void* getRendererID() const { return reinterpret_cast<const void*>(static_cast<uintptr_t>(m_id)); }
+
+        Texture(const Texture&) = delete;
+        Texture& operator=(const Texture&) = delete;
     private:
         void createTexture();
 
