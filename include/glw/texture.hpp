@@ -42,7 +42,7 @@ namespace glw {
             uint32_t height;
         };
 
-        //explicit Texture(const char* path);
+        explicit Texture(const char* path, bool flip = false);
         explicit Texture(const Properties& properties);
         Texture(Texture&& other) noexcept;
         ~Texture();

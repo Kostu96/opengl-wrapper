@@ -1,7 +1,7 @@
 #include "glw/texture.hpp"
 
 #include <glad/gl.h>
-//#include <stb/stb_image.h>
+#include <stb/stb_image.h>
 
 #include <cassert>
 
@@ -43,21 +43,23 @@ namespace glw {
         }
     }
 
-    /*Texture::Texture(const char* path)
+    Texture::Texture(const char* path, bool flip)
     {
+        stbi_set_flip_vertically_on_load(flip);
+
         int width, height, channels;
         stbi_uc* data = stbi_load(path, &width, &height, &channels, 4);
-        JNG_CORE_ASSERT(data, std::string{ "Failed to load image: " } + path);
+        assert(data && "Failed to load texture!");
 
         m_properties.specification.format = TextureFormat::RGBA8;
-        m_properties.width = static_cast<u32>(width);
-        m_properties.height = static_cast<u32>(height);
+        m_properties.width = static_cast<uint32_t>(width);
+        m_properties.height = static_cast<uint32_t>(height);
 
         createTexture();
         glTextureSubImage2D(m_id, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
-    }*/
+    }
 
     Texture::Texture(const Properties& properties) :
         m_properties{ properties }
