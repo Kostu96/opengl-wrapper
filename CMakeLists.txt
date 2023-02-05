@@ -10,12 +10,14 @@ add_library(${GLW_TARGET_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/error_callback.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/framebuffer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/glw.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/renderer.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/shader.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/texture.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/glw/vertex_array.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/buffers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/framebuffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/glw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/texture.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/vertex_array.cpp
