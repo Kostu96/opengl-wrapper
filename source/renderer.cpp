@@ -101,7 +101,6 @@ void main()
 			glw::VertexBuffer* quadVBO = nullptr;
 			glw::IndexBuffer* quadIBO = nullptr;
 			uint16_t currentQuadIndexCount = 0;
-			float quadVertexPositions[4][2];
 		}
 		s_data;
 
@@ -175,15 +174,6 @@ void main()
 			s_data.quadIBO = new IndexBuffer{ quadIndices, MaxQuadIndicesPerBatch, glw::IndexBuffer::IndexType::U16 };
 			delete[] quadIndices;
 			s_data.quadVAO->setIndexBuffer(*s_data.quadIBO);
-
-			s_data.quadVertexPositions[0][0] = -0.5f;
-			s_data.quadVertexPositions[0][1] = -0.5f;
-			s_data.quadVertexPositions[1][0] =  0.5f;
-			s_data.quadVertexPositions[1][1] = -0.5f;
-			s_data.quadVertexPositions[2][0] =  0.5f;
-			s_data.quadVertexPositions[2][1] =  0.5f;
-			s_data.quadVertexPositions[3][0] = -0.5f;
-			s_data.quadVertexPositions[3][1] =  0.5f;
 		}
 
 		void shutdown()
@@ -227,7 +217,7 @@ void main()
 			s_data.pointVBOPtr++;
 		}
 
-		void renderTexture(uint16_t x, uint16_t y, uint16_t u0, uint16_t v0, uint16_t u1, uint16_t v1)
+		void renderTexture(float left, float top, float right, float bottom, float u0, float v0, float u1, float v1)
 		{
 			if (s_data.currentQuadIndexCount >= MaxQuadIndicesPerBatch)
 			{
@@ -235,28 +225,28 @@ void main()
 				beginQuadBatch();
 			}
 
-			s_data.quadVBOPtr->x = (float)(x) / (256.0 * 0.5) - 1.0;
-			s_data.quadVBOPtr->y = -((float)(y + 8) / (256.0 * 0.5) - 1.0);
-			s_data.quadVBOPtr->u = (float)u0 / 128.0;
-			s_data.quadVBOPtr->v = 1.0 - (float)v1 / 192.0;
+			s_data.quadVBOPtr->x = left;
+			s_data.quadVBOPtr->y = bottom;
+			s_data.quadVBOPtr->u = u0;
+			s_data.quadVBOPtr->v = v1;
 			s_data.quadVBOPtr++;
 
-			s_data.quadVBOPtr->x = (float)(x + 8) / (256.0 * 0.5) - 1.0;
-			s_data.quadVBOPtr->y = -((float)(y + 8) / (256.0 * 0.5) - 1.0);
-			s_data.quadVBOPtr->u = (float)u1 / 128.0;
-			s_data.quadVBOPtr->v = 1.0 - (float)v1 / 192.0;
+			s_data.quadVBOPtr->x = right;
+			s_data.quadVBOPtr->y = bottom;
+			s_data.quadVBOPtr->u = u1;
+			s_data.quadVBOPtr->v = v1;
 			s_data.quadVBOPtr++;
 
-			s_data.quadVBOPtr->x = (float)(x + 8) / (256.0 * 0.5) - 1.0;
-			s_data.quadVBOPtr->y = -((float)(y) / (256.0 * 0.5) - 1.0);
-			s_data.quadVBOPtr->u = (float)u1 / 128.0;
-			s_data.quadVBOPtr->v = 1.0 - (float)v0 / 192.0;
+			s_data.quadVBOPtr->x = right;
+			s_data.quadVBOPtr->y = top;
+			s_data.quadVBOPtr->u = u1;
+			s_data.quadVBOPtr->v = v0;
 			s_data.quadVBOPtr++;
 
-			s_data.quadVBOPtr->x = (float)(x) / (256.0 * 0.5) - 1.0;
-			s_data.quadVBOPtr->y = -((float)(y) / (256.0 * 0.5) - 1.0);
-			s_data.quadVBOPtr->u = (float)u0 / 128.0;
-			s_data.quadVBOPtr->v = 1.0 - (float)v0 / 192.0;
+			s_data.quadVBOPtr->x = left;
+			s_data.quadVBOPtr->y = top;
+			s_data.quadVBOPtr->u = u0;
+			s_data.quadVBOPtr->v = v0;
 			s_data.quadVBOPtr++;
 
 			s_data.currentQuadIndexCount += 6;

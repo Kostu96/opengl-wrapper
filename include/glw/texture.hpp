@@ -19,7 +19,8 @@ namespace glw {
     };
 
     enum class TextureWrapMode {
-        Clamp
+        Clamp,
+        Repeat
     };
 
     struct TextureSpecification {

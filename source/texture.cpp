@@ -37,6 +37,7 @@ namespace glw {
         switch (wrapMode)
         {
         case TextureWrapMode::Clamp: return GL_CLAMP_TO_EDGE;
+        case TextureWrapMode::Repeat: return GL_REPEAT;
         default:
             assert(false);
             return 0;
