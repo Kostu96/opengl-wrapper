@@ -2,6 +2,7 @@
 #include "glw/shader.hpp"
 #include "glw/vertex_array.hpp"
 #include "glw/buffers.hpp"
+#include "glw/framebuffer.hpp"
 
 #include <glad/gl.h>
 
@@ -84,22 +85,30 @@ void main()
 		};
 		static_assert(sizeof(QuadVertex) == 16);
 
-		static constexpr uint16_t MaxPointVerticesPerBatch = 10000;
-		static constexpr uint16_t MaxQuadVerticesPerBatch = 2000 * 4;
-		static constexpr uint16_t MaxQuadIndicesPerBatch = 2000 * 6;
+		static constexpr uint16_t MaxPointVerticesPerBatch = 4000;
+		static constexpr uint16_t MaxLineVerticesPerBatch = 2000;
+		static constexpr uint16_t MaxQuadVerticesPerBatch = 1000 * 4;
+		static constexpr uint16_t MaxQuadIndicesPerBatch = 1000 * 6;
 		static struct RendererData {
+			const glw::Framebuffer* fbo = nullptr;
+
 			PointVertex* pointVBOBase = nullptr;
 			PointVertex* pointVBOPtr = nullptr;
-			glw::Shader* pointShader = nullptr;
 			glw::VertexArray* pointVAO = nullptr;
 			glw::VertexBuffer* pointVBO = nullptr;
+			glw::Shader* pointShader = nullptr;
+
+			PointVertex* lineVBOBase = nullptr;
+			PointVertex* lineVBOPtr = nullptr;
+			glw::VertexArray* lineVAO = nullptr;
+			glw::VertexBuffer* lineVBO = nullptr;
 
 			QuadVertex* quadVBOBase = nullptr;
 			QuadVertex* quadVBOPtr = nullptr;
-			glw::Shader* quadShader = nullptr;
 			glw::VertexArray* quadVAO = nullptr;
 			glw::VertexBuffer* quadVBO = nullptr;
 			glw::IndexBuffer* quadIBO = nullptr;
+			glw::Shader* quadShader = nullptr;
 			uint16_t currentQuadIndexCount = 0;
 		}
 		s_data;
@@ -118,6 +127,23 @@ void main()
 				s_data.pointVAO->bind();
 				s_data.pointShader->bind();
 				glDrawArrays(GL_POINTS, 0, (GLsizei)(dataSize / sizeof(PointVertex)));
+			}
+		}
+
+		static void beginLineBatch()
+		{
+			s_data.lineVBOPtr = s_data.lineVBOBase;
+		}
+
+		static void endLineBatch()
+		{
+			size_t dataSize = (uintptr_t)s_data.lineVBOPtr - (uintptr_t)s_data.lineVBOBase;
+			if (dataSize > 0)
+			{
+				s_data.lineVBO->setData(s_data.lineVBOBase, dataSize);
+				s_data.lineVAO->bind();
+				s_data.pointShader->bind();
+				glDrawArrays(GL_LINES, 0, (GLsizei)(dataSize / sizeof(PointVertex)));
 			}
 		}
 
@@ -153,6 +179,10 @@ void main()
 			} };
 			s_data.pointVAO = new glw::VertexArray{ *s_data.pointVBO, pointLayout };
 
+			s_data.lineVBOBase = new PointVertex[MaxLineVerticesPerBatch];
+			s_data.lineVBO = new glw::VertexBuffer{ MaxLineVerticesPerBatch * sizeof(PointVertex) };
+			s_data.lineVAO = new glw::VertexArray{ *s_data.lineVBO, pointLayout };
+
 			s_data.quadShader = new glw::Shader{};
 			s_data.quadShader->createFromSource(quadVertSource, quadFragSource);
 			s_data.quadVBOBase = new QuadVertex[MaxQuadVerticesPerBatch];
@@ -180,26 +210,44 @@ void main()
 		{
 			delete s_data.pointVAO;
 			delete s_data.pointVBO;
-			delete s_data.pointShader;
 			delete[] s_data.pointVBOBase;
+			delete s_data.pointShader;
+
+			delete s_data.lineVAO;
+			delete s_data.lineVBO;
+			delete[] s_data.lineVBOBase;
 
 			delete s_data.quadVAO;
 			delete s_data.quadVBO;
-			delete s_data.quadShader;
 			delete s_data.quadIBO;
+			delete s_data.quadShader;
 			delete[] s_data.quadVBOBase;
 		}
 
-		void beginFrame()
+		void beginFrame(const Framebuffer* framebuffer)
 		{
+			s_data.fbo = framebuffer;
+			if (s_data.fbo)
+			{
+				s_data.fbo->bind();
+				glViewport(0, 0, s_data.fbo->getProperties().width, s_data.fbo->getProperties().height);
+			}
+
 			beginPointBatch();
+			beginLineBatch();
 			beginQuadBatch();
 		}
 
 		void endFrame()
 		{
 			endPointBatch();
+			endLineBatch();
 			endQuadBatch();
+
+			if (s_data.fbo)
+			{
+				s_data.fbo->unbind();
+			}
 		}
 
 		void renderPoint(uint16_t x, uint16_t y, uint32_t color)
@@ -211,10 +259,30 @@ void main()
 				beginPointBatch();
 			}
 
-			s_data.pointVBOPtr->x = (float)x / (128.0 * 0.5) - 1.0;   //
-			s_data.pointVBOPtr->y = -((float)y / (192.0 * 0.5) -1.0); // TODO: generalize
+			s_data.pointVBOPtr->x = (float)x / ((128.0 + 15.0 + 2.0) * 0.5) - 1.0;   //
+			s_data.pointVBOPtr->y = -((float)y / ((192.0 + 23.0 + 2.0) * 0.5) -1.0); // TODO: generalize
 			s_data.pointVBOPtr->color = color;
 			s_data.pointVBOPtr++;
+		}
+
+		void renderLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint32_t color)
+		{
+			if (((uintptr_t)s_data.lineVBOPtr - (uintptr_t)s_data.lineVBOBase) / sizeof(PointVertex)
+				>= MaxLineVerticesPerBatch)
+			{
+				endLineBatch();
+				beginLineBatch();
+			}
+
+			s_data.lineVBOPtr->x = (float)x0 / (256.0 * 0.5) - 1.0;    //
+			s_data.lineVBOPtr->y = -((float)y0 / (256.0 * 0.5) - 1.0); // TODO: generalize
+			s_data.lineVBOPtr->color = color;
+			s_data.lineVBOPtr++;
+
+			s_data.lineVBOPtr->x = (float)x1 / (256.0 * 0.5) - 1.0;    //
+			s_data.lineVBOPtr->y = -((float)y1 / (256.0 * 0.5) - 1.0); // TODO: generalize
+			s_data.lineVBOPtr->color = color;
+			s_data.lineVBOPtr++;
 		}
 
 		void renderTexture(float left, float top, float right, float bottom, float u0, float v0, float u1, float v1)
