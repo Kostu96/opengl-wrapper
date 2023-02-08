@@ -92,7 +92,7 @@ namespace glw {
         if (width == 0) width = m_properties.width;
         if (height == 0) height = m_properties.height;
 
-        assert(width * height == size);
+        assert(width * height * 4 == size);
 
         glTextureSubImage2D(
             m_id, 0,
