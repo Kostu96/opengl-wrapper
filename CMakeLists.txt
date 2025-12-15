@@ -26,6 +26,8 @@ target_compile_features(glw PRIVATE cxx_std_23)
 target_include_directories(glw PUBLIC src/include)
 
 target_link_libraries(glw PUBLIC
-    cut
+    cut::cut
     OpenGL::GL
 )
+
+add_library(glw::glw ALIAS glw)
