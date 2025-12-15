@@ -6,6 +6,10 @@ add_subdirectory(cpp-utils)
 
 find_package(OpenGL REQUIRED)
 
+set(BUILD_SHARED_LIBS OFF)
+set(GLM_ENABLE_CXX_20 ON)
+add_subdirectory(third_party/glm)
+
 add_library(glw STATIC
     src/buffer.cpp
     #src/framebuffer.cpp
@@ -23,10 +27,14 @@ add_library(glw STATIC
 
 target_compile_features(glw PRIVATE cxx_std_23)
 
-target_include_directories(glw PUBLIC src/include)
+target_include_directories(glw PUBLIC
+    src/include
+    third_party/glm
+)
 
 target_link_libraries(glw PUBLIC
     cut::cut
+    glm::glm
     OpenGL::GL
 )
 

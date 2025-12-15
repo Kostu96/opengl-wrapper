@@ -29,7 +29,10 @@
     DO(PFNGLLINKPROGRAMPROC,               glLinkProgram)              \
     DO(PFNGLGETPROGRAMIVPROC,              glGetProgramiv)             \
     DO(PFNGLGETPROGRAMINFOLOGPROC,         glGetProgramInfoLog)        \
-    DO(PFNGLUSEPROGRAMPROC,                glUseProgram)
+    DO(PFNGLUSEPROGRAMPROC,                glUseProgram)               \
+    DO(PFNGLGETACTIVEUNIFORMPROC,          glGetActiveUniform)         \
+    DO(PFNGLGETUNIFORMLOCATIONPROC,        glGetUniformLocation)       \
+    DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,   glProgramUniformMatrix4fv)
 
 #define DECLARE_OPENGL_FUNCTION(TYPE, NAME) inline TYPE NAME = nullptr;
 FOR_OPENGL_FUNCTIONS(DECLARE_OPENGL_FUNCTION)
