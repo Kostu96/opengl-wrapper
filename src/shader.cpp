@@ -28,9 +28,9 @@ Shader::Shader(std::string_view source, Type type) :
     glShaderSource(handle_.get(), 1, sources, lengths);
     glCompileShader(handle_.get());
 
-    int ret;
-    glGetShaderiv(handle_.get(), GL_COMPILE_STATUS, &ret);
-    if (!ret) {
+    int success;
+    glGetShaderiv(handle_.get(), GL_COMPILE_STATUS, &success);
+    if (success != GL_TRUE) {
         int length = 0;
         glGetShaderiv(handle_.get(), GL_INFO_LOG_LENGTH, &length);
         std::string infoLog;
@@ -40,7 +40,7 @@ Shader::Shader(std::string_view source, Type type) :
     };
 }
 
-Program::Program(std::initializer_list<Shader> shaders) :
+Program::Program(const std::initializer_list<Shader>& shaders) :
     handle_(glCreateProgram(), glDeleteProgram) {
 
     for (auto& shader : shaders) {
@@ -55,7 +55,7 @@ Program::Program(std::initializer_list<Shader> shaders) :
 
     int success;
     glGetProgramiv(handle_.get(), GL_LINK_STATUS, &success);
-    if (!success) {
+    if (success != GL_TRUE) {
         int length = 0;
         glGetProgramiv(handle_.get(), GL_INFO_LOG_LENGTH, &length);
         std::string infoLog;

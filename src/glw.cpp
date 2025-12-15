@@ -47,7 +47,7 @@ static void GLAPIENTRY OGLErrorCallback(GLenum source,
     case GL_DEBUG_SEVERITY_NOTIFICATION: severity_str = "Notification"; break;
     }
 
-    std::println(std::cerr, "GLWDebug: {} | Type: {} {} | ID: {}\n{}", source_str, type_str, severity_str, id, message);
+    std::println(std::cerr, "GLWDebug: {} - {} {} ({}):\n{}", source_str, type_str, severity_str, id, message);
 }
 
 bool init(GLWLoadFunc func)

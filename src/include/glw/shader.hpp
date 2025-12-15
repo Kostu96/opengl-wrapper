@@ -24,7 +24,7 @@ private:
 class Program final :
     cut::NonCopyable {
 public:
-    Program(std::initializer_list<Shader> shaders);
+    Program(const std::initializer_list<Shader>& shaders);
 
     void bind() const;
 private:
