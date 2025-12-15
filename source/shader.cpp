@@ -1,87 +1,72 @@
 #include "glw/shader.hpp"
+#include "glw/glw.hpp"
 
-#include <glad/gl.h>
+#include <cut/exception.hpp>
 
-#include <cassert>
-#include <iostream>
+namespace {
+
+cut::u32 shaderTypeToOGLShaderType(glw::Shader::Type type) {
+    switch (type) {
+    using glw::Shader;
+    case Shader::Type::Vertex:   return GL_VERTEX_SHADER;
+    case Shader::Type::Fragment: return GL_FRAGMENT_SHADER;
+    }
+
+    throw cut::Exception("Unhandled Shader type!");
+    return cut::to_u32(-1);
+}
+
+} // namespace
 
 namespace glw {
 
-    static uint32_t shaderTypeToOGLShaderType(Shader::Type type)
-    {
-        switch (type)
-        {
-        case Shader::Type::Vertex:   return GL_VERTEX_SHADER;
-        case Shader::Type::Fragment: return GL_FRAGMENT_SHADER;
-        }
+Shader::Shader(std::string_view source, Type type) : 
+    handle_(glCreateShader(shaderTypeToOGLShaderType(type)), glDeleteShader) {
+    
+    const GLchar* sources[]{ source.data() };
+    const GLint lengths[]{ static_cast<GLint>(source.size()) };
+    glShaderSource(handle_.get(), 1, sources, lengths);
+    glCompileShader(handle_.get());
 
-        return static_cast<uint32_t>(-1);
+    int ret;
+    glGetShaderiv(handle_.get(), GL_COMPILE_STATUS, &ret);
+    if (!ret) {
+        int length = 0;
+        glGetShaderiv(handle_.get(), GL_INFO_LOG_LENGTH, &length);
+        std::string infoLog;
+        infoLog.resize(length);
+        glGetShaderInfoLog(handle_.get(), length, nullptr, infoLog.data());
+        throw cut::Exception(std::format("Could not compile shader! {}", infoLog));
+    };
+}
+
+Program::Program(std::initializer_list<Shader> shaders) :
+    handle_(glCreateProgram(), glDeleteProgram) {
+
+    for (auto& shader : shaders) {
+        glAttachShader(handle_.get(), shader.get_native_handle());
     }
 
-    Shader::~Shader()
-    {
-        if (m_id != static_cast<uint32_t>(-1))
-            glDeleteProgram(m_id);
+    glLinkProgram(handle_.get());
+    
+    for (auto& shader : shaders) {
+        glDetachShader(handle_.get(), shader.get_native_handle());
     }
 
-    void Shader::createFromFile(const char* /*vertexShaderFilename*/, const char* /*fragmentShaderFilename*/)
-    {
-        assert(false && "Not implemented!");
+    int success;
+    glGetProgramiv(handle_.get(), GL_LINK_STATUS, &success);
+    if (!success) {
+        int length = 0;
+        glGetProgramiv(handle_.get(), GL_INFO_LOG_LENGTH, &length);
+        std::string infoLog;
+        infoLog.resize(length);
+        glGetProgramInfoLog(handle_.get(), length, nullptr, infoLog.data());
+        throw cut::Exception(std::format("Could not link program! {}", infoLog));
     }
+}
 
-    void Shader::createFromSource(const char* vertexShaderSource, const char* fragmentShaderSource)
-    {
-        uint32_t vs = compileShader(vertexShaderSource, Type::Vertex);
-        uint32_t fs = compileShader(fragmentShaderSource, Type::Fragment);
-        m_id = glCreateProgram();
-        glAttachShader(m_id, vs);
-        glAttachShader(m_id, fs);
-
-        glLinkProgram(m_id);
-        int success;
-        glGetProgramiv(m_id, GL_LINK_STATUS, &success);
-        if (!success) {
-            int maxLength = 0;
-            glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
-            char* infoLog = new char[maxLength];
-            glGetProgramInfoLog(m_id, maxLength, nullptr, infoLog);
-            std::cerr << "Shader program linking failed!\n" << infoLog << '\n';
-            glDeleteProgram(m_id);
-        }
-
-        glDetachShader(m_id, vs);
-        glDetachShader(m_id, fs);
-        glDeleteShader(vs);
-        glDeleteShader(fs);
-    }
-
-    void Shader::bind() const
-    {
-        glUseProgram(m_id);
-    }
-
-    void Shader::unbind() const
-    {
-        glUseProgram(0);
-    }
-
-    uint32_t Shader::compileShader(const char* source, Type type) const
-    {
-        uint32_t id = glCreateShader(shaderTypeToOGLShaderType(type));
-        glShaderSource(id, 1, &source, nullptr);
-        glCompileShader(id);
-        int ret;
-        glGetShaderiv(id, GL_COMPILE_STATUS, &ret);
-        if (!ret) {
-            int maxLength = 0;
-            glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-            char* infoLog = new char[maxLength];
-            glGetShaderInfoLog(id, maxLength, nullptr, infoLog);
-            std::cerr << "Shader compilation failed!\n" << infoLog << '\n';
-            delete[] infoLog;
-        };
-
-        return id;
-    }
+void Program::bind() const {
+    glUseProgram(handle_.get());
+}
 
 } // namespace glw

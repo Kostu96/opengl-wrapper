@@ -1,31 +1,34 @@
 #pragma once
-#include <cstdint>
+#include <cut/auto_release.hpp>
+#include <cut/non_copyable.hpp>
+#include <cut/types.hpp>
+
+#include <string_view>
 
 namespace glw {
 
-    class Shader final
-    {
-    public:
-        enum class Type {
-            Vertex,
-            Fragment
-        };
+using cut::u32;
 
-        Shader() = default;
-        ~Shader();
+class Shader final :
+    cut::NonCopyable {
+public:
+    enum class Type { Vertex, Fragment };
 
-        void createFromFile(const char* vertexShaderFilename, const char* fragmentShaderFilename);
-        void createFromSource(const char* vertexShaderSource, const char* fragmentShaderSource);
+    Shader(std::string_view source, Type type);
 
-        void bind() const;
-        void unbind() const;
+    u32 get_native_handle() const { return handle_.get(); }
+private:
+    cut::AutoRelease<u32, void(*)(u32)> handle_;
+};
 
-        Shader(const Shader&) = delete;
-        Shader& operator=(const Shader&) = delete;
-    private:
-        uint32_t compileShader(const char* source, Type type) const;
+class Program final :
+    cut::NonCopyable {
+public:
+    Program(std::initializer_list<Shader> shaders);
 
-        uint32_t m_id = static_cast<uint32_t>(-1);
-    };
+    void bind() const;
+private:
+    cut::AutoRelease<u32, void(*)(u32)> handle_;
+};
 
 } // namespace glw
