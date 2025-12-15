@@ -7,16 +7,14 @@
 
 namespace glw {
 
-using cut::u8;
-using cut::u16;
 using cut::u32;
-using cut::s32;
-using cut::f32;
 
 class Buffer;
 
-struct LayoutElement {
-    enum class DataType : u8 {
+class VertexArray final :
+    cut::NonCopyable {
+public:
+    enum class DataType {
         U8_4,
         U16_2,
         U32, U32_2, U32_3, U32_4,
@@ -28,30 +26,7 @@ struct LayoutElement {
         F32, F32_2, F32_3, F32_4
     };
 
-    explicit LayoutElement(DataType type_);
-
-    u32 offset;
-    DataType type;
-};
-
-class VertexLayout final :
-    cut::NonCopyable {
-public:
-    explicit VertexLayout(const std::initializer_list<LayoutElement>& list);
-
-    u32 get_stride() const { return stride_; }
-
-    auto begin() const { return elements_.begin(); }
-    auto end() const { return elements_.end(); }
-private:
-    std::vector<LayoutElement> elements_;
-    u32 stride_;
-};
-
-class VertexArray final :
-    cut::NonCopyable {
-public:
-    VertexArray(const Buffer& vertex_buffer, const VertexLayout& layout);
+    VertexArray(const Buffer& vertex_buffer, const std::initializer_list<DataType>& layout);
 
     void set_index_buffer(const Buffer& index_buffer);
 
