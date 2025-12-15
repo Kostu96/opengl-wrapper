@@ -1,6 +1,6 @@
 #include "glw/vertex_array.hpp"
 
-#include "glw/buffers.hpp"
+#include "glw/buffer.hpp"
 
 #include <glad/gl.h>
 
@@ -133,7 +133,7 @@ namespace glw {
                     static_cast<int>(layout.getStride()),
                     reinterpret_cast<const void*>(element.offset)
                 );
-            else    
+            else
                 glVertexAttribIPointer(index,
                     dataTypeToCount(element.type),
                     dataTypeToGLEnum(element.type),

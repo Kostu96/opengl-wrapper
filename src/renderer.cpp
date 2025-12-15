@@ -96,7 +96,7 @@ void main()
 			PointVertex* pointVBOPtr = nullptr;
 			glw::VertexArray* pointVAO = nullptr;
 			glw::VertexBuffer* pointVBO = nullptr;
-			glw::Shader* pointShader = nullptr;
+			glw::Program* pointShader = nullptr;
 
 			PointVertex* lineVBOBase = nullptr;
 			PointVertex* lineVBOPtr = nullptr;
@@ -108,7 +108,7 @@ void main()
 			glw::VertexArray* quadVAO = nullptr;
 			glw::VertexBuffer* quadVBO = nullptr;
 			glw::IndexBuffer* quadIBO = nullptr;
-			glw::Shader* quadShader = nullptr;
+			glw::Program* quadShader = nullptr;
 			uint16_t currentQuadIndexCount = 0;
 		}
 		s_data;
@@ -169,7 +169,7 @@ void main()
 		{
 			glActiveTexture(GL_TEXTURE0);
 
-			s_data.pointShader = new glw::Shader{};
+			s_data.pointShader = new glw::Program{};
 			s_data.pointShader->createFromSource(pointVertSource, pointFragSource);
 			s_data.pointVBOBase = new PointVertex[MaxPointVerticesPerBatch];
 			s_data.pointVBO = new glw::VertexBuffer{ MaxPointVerticesPerBatch * sizeof(PointVertex) };
