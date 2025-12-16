@@ -63,8 +63,7 @@ Program::Program(const std::initializer_list<Shader>& shaders) :
     if (success != GL_TRUE) {
         GLint length = 0;
         glGetProgramiv(handle_.get(), GL_INFO_LOG_LENGTH, &length);
-        std::string infoLog;
-        infoLog.resize(length);
+        std::string infoLog(length, '\0');
         glGetProgramInfoLog(handle_.get(), length, nullptr, infoLog.data());
         throw cut::Exception(std::format("Could not link program! {}", infoLog));
     }

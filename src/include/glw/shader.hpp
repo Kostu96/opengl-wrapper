@@ -36,7 +36,7 @@ public:
     void bind() const;
 private:
     struct TransparentHash {
-        using is_transparent = void; // enables heterogeneous lookup
+        using is_transparent = void;
 
         template<typename T>
         std::size_t operator()(const T& v) const noexcept {
@@ -45,7 +45,7 @@ private:
     };
 
     struct TransparentEqual {
-        using is_transparent = void; // enables heterogeneous lookup
+        using is_transparent = void;
 
         template<typename A, typename B>
         bool operator()(const A& lhs, const B& rhs) const noexcept {
