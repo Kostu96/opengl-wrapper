@@ -32,7 +32,9 @@
     DO(PFNGLUSEPROGRAMPROC,                glUseProgram)               \
     DO(PFNGLGETACTIVEUNIFORMPROC,          glGetActiveUniform)         \
     DO(PFNGLGETUNIFORMLOCATIONPROC,        glGetUniformLocation)       \
-    DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,   glProgramUniformMatrix4fv)
+    DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,   glProgramUniformMatrix4fv)  \
+    DO(PFNGLCREATESAMPLERSPROC,            glCreateSamplers)           \
+    DO(PFNGLDELETESAMPLERSPROC,            glDeleteSamplers)
 
 #define DECLARE_OPENGL_FUNCTION(TYPE, NAME) inline TYPE NAME = nullptr;
 FOR_OPENGL_FUNCTIONS(DECLARE_OPENGL_FUNCTION)

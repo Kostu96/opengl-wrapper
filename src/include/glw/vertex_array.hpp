@@ -32,7 +32,7 @@ public:
 
     void bind() const;
 private:
-    cut::AutoRelease<u32, void(*)(u32)> handle_;
+    cut::AutoRelease<u32> handle_;
 };
 
 } // namespace glw

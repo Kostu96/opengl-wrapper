@@ -16,7 +16,7 @@ public:
 
     u32 get_native_handle() const { return handle_.get(); }
 private:
-    cut::AutoRelease<u32, void(*)(u32)> handle_;
+    cut::AutoRelease<u32> handle_;
 };
 
 } // namespace glw

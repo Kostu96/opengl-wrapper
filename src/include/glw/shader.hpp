@@ -23,7 +23,7 @@ public:
 
     u32 get_native_handle() const { return handle_.get(); }
 private:
-    cut::AutoRelease<u32, void(*)(u32)> handle_;
+    cut::AutoRelease<u32> handle_;
 };
 
 class Program final :
@@ -55,7 +55,7 @@ private:
 
     s32 get_uniform_location(std::string_view name) const;
 
-    cut::AutoRelease<u32, void(*)(u32)> handle_;
+    cut::AutoRelease<u32> handle_;
     std::unordered_map<std::string, s32, TransparentHash, TransparentEqual> uniforms_;
 };
 
