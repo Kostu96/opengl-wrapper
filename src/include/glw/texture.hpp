@@ -3,29 +3,12 @@
 #include <cut/non_copyable.hpp>
 #include <cut/types.hpp>
 
-#include <cstddef>
-#include <cstdint>
+#include <span>
 
 namespace glw {
 
+using cut::u16;
 using cut::u32;
-
-class Sampler :
-    cut::NonCopyable {
-public:
-    Sampler();
-private:
-    cut::AutoRelease<u32> handle_;
-};
-
-enum class TextureFormat {
-    None,
-    
-    RGBA8, // normalized integer
-    R32,   // unsigned integer
-
-    Depth24Stencil8
-};
 
 enum class TextureFilter {
     Linear,
@@ -33,50 +16,57 @@ enum class TextureFilter {
 };
 
 enum class TextureWrapMode {
-    Clamp,
-    Repeat
+    Repeat,
+    ClampToEdge
 };
 
-struct TextureSpecification {
-    TextureFormat format;
-    TextureFilter minificationFilter = TextureFilter::Linear;
-    TextureFilter magnificationFilter = TextureFilter::Linear;
-    TextureWrapMode wrapMode = TextureWrapMode::Clamp;
-
-    TextureSpecification(TextureFormat inFormat) : format{ inFormat } {}
-    TextureSpecification(TextureFormat inFormat, TextureFilter inMinFilter, TextureFilter inMagFilter, TextureWrapMode inWrapMode) :
-        format{ inFormat }, minificationFilter{ inMinFilter }, magnificationFilter{ inMagFilter }, wrapMode{ inWrapMode } {}
+struct SamplerDescription {
+    TextureFilter filter = TextureFilter::Linear;
+    TextureWrapMode wrap_mode = TextureWrapMode::Repeat;
 };
 
-class Texture final
-{
+class Sampler final :
+    cut::NonCopyable {
 public:
-    struct Properties {
-        TextureSpecification specification = TextureFormat::None;
-        uint32_t width;
-        uint32_t height;
-    };
+    explicit Sampler(const SamplerDescription& desc);
 
-    explicit Texture(const char* path, bool flip = false);
-    explicit Texture(const Properties& properties);
-    Texture(Texture&& other) noexcept;
-    ~Texture();
-
-    void bind(uint32_t slot) const;
-    void unbind(uint32_t slot) const;
-    void setData(const void* data, size_t size, uint32_t xoffset = 0, uint32_t yoffset = 0, uint32_t width = 0, uint32_t height = 0) const;
-
-    uint32_t getID() const { return m_id; }
-    const Properties& getProperties() const { return m_properties; }
-    const void* getRendererID() const { return reinterpret_cast<const void*>(static_cast<uintptr_t>(m_id)); }
-
-    Texture(const Texture&) = delete;
-    Texture& operator=(const Texture&) = delete;
+    void bind(u32 unit) const;
 private:
-    void createTexture();
+    cut::AutoRelease<u32> handle_;
+};
 
-    Properties m_properties;
-    uint32_t m_id;
+enum class TextureType {
+    Texture2D,
+    CubeMap
+};
+
+enum class TextureFormat {
+    None,
+    
+    RGBA8, // normalized integer
+    R32U,   // unsigned integer
+
+    Depth24Stencil8
+};
+
+struct TextureDescription {
+    TextureType type = TextureType::Texture2D;
+    TextureFormat format = TextureFormat::RGBA8;
+    u16 width = 1;
+    u16 height = 1;
+};
+
+class Texture final :
+    cut::NonCopyable {
+public:
+    explicit Texture(const TextureDescription& desc);
+
+    void set_pixels(std::span<const std::byte> pixels, u16 x_offset = 0, u16 y_offset = 0, u16 width = 0, u16 height = 0) const;
+    
+    void bind(u32 unit) const;
+private:
+    cut::AutoRelease<u32> handle_;
+    TextureDescription desc_;
 };
 
 } // namespace glw

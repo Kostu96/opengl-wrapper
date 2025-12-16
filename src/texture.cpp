@@ -1,121 +1,101 @@
 #include "glw/texture.hpp"
+#include "glw/glw.hpp"
+
+#include <cut/exception.hpp>
+
+namespace {
+
+using namespace glw;
+
+GLenum to_gl_enum(TextureFilter filter) {
+    switch (filter) {
+    case TextureFilter::Linear:  return GL_LINEAR;
+    case TextureFilter::Nearest: return GL_NEAREST;
+    }
+
+    throw cut::Exception("Unhandled texture filter!");
+    return {};
+}
+
+GLenum to_gl_enum(TextureWrapMode wrap_mode) {
+    switch (wrap_mode) {
+    case TextureWrapMode::Repeat:      return GL_REPEAT;
+    case TextureWrapMode::ClampToEdge: return GL_CLAMP_TO_EDGE;
+    }
+
+    throw cut::Exception("Unhandled texture wrap mode!");
+    return {};
+}
+
+GLenum to_gl_enum(TextureType type) {
+    switch (type) {
+    case TextureType::Texture2D: return GL_TEXTURE_2D;
+    case TextureType::CubeMap:   return GL_TEXTURE_CUBE_MAP;
+    }
+
+    throw cut::Exception("Unhandled texture format!");
+    return {};
+}
+
+GLenum to_gl_enum(TextureFormat format) {
+    switch (format) {
+    case TextureFormat::RGBA8:           return GL_RGBA8;
+    case TextureFormat::R32U:            return GL_R32UI;
+    case TextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+    }
+
+    throw cut::Exception("Unhandled texture format!");
+    return {};
+}
+
+} // namespace
 
 namespace glw {
 
-glw::Sampler::Sampler() {
+Sampler::Sampler(const SamplerDescription& desc) :
+    handle_(0u, [](u32 handle){ glDeleteSamplers(1, &handle); }) {
+
+    GLuint handle;
+    glCreateSamplers(1, &handle);
+    handle_.reset(handle);
+
+    glSamplerParameteri(handle, GL_TEXTURE_MIN_FILTER, to_gl_enum(desc.filter));
+    glSamplerParameteri(handle, GL_TEXTURE_MAG_FILTER, to_gl_enum(desc.filter));
+    glSamplerParameteri(handle, GL_TEXTURE_WRAP_S, to_gl_enum(desc.wrap_mode));
+    glSamplerParameteri(handle, GL_TEXTURE_WRAP_T, to_gl_enum(desc.wrap_mode));
+    glSamplerParameteri(handle, GL_TEXTURE_WRAP_R, to_gl_enum(desc.wrap_mode));
 }
 
-static uint32_t textureFormatToGLEnum(TextureFormat format)
-{
-    switch (format)
-    {
-    case TextureFormat::RGBA8:           return GL_RGBA8;
-    case TextureFormat::R32:             return GL_R32I;
-    case TextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
-    default:
-        assert(false);
-        return 0;
-    }
+void Sampler::bind(u32 unit) const {
+    glBindSampler(unit, handle_.get());
 }
 
-static uint32_t textureFilterToGLEnum(TextureFilter filter)
-{
-    switch (filter)
-    {
-    case TextureFilter::Linear:  return GL_LINEAR;
-    case TextureFilter::Nearest: return GL_NEAREST;
-    default:
-        assert(false);
-        return 0;
-    }
+Texture::Texture(const TextureDescription &desc) :
+    handle_(0u, [](u32 handle){ glDeleteTextures(1, &handle); }),
+    desc_(desc) {
+
+    GLuint handle;
+    glCreateTextures(to_gl_enum(desc.type), 1, &handle);
+    handle_.reset(handle);
+
+    glTextureStorage2D(handle, 1, to_gl_enum(desc.format), desc.width, desc.height);
 }
 
-static uint32_t textureWrapModeToGLEnum(TextureWrapMode wrapMode)
-{
-    switch (wrapMode)
-    {
-    case TextureWrapMode::Clamp: return GL_CLAMP_TO_EDGE;
-    case TextureWrapMode::Repeat: return GL_REPEAT;
-    default:
-        assert(false);
-        return 0;
-    }
-}
+void Texture::set_pixels(std::span<const std::byte> pixels, u16 x_offset, u16 y_offset, u16 width, u16 height) const {
+    if (width == 0) width = desc_.width;
+    if (height == 0) height = desc_.height;
 
-Texture::Texture(const char* path, bool flip)
-{
-    stbi_set_flip_vertically_on_load(flip);
+    cut::ensure(width * height * 4 == pixels.size(), "Setting pixels partially is unsupported!");
 
-    int width, height, channels;
-    stbi_uc* data = stbi_load(path, &width, &height, &channels, 4);
-    assert(data && "Failed to load texture!");
-
-    m_properties.specification.format = TextureFormat::RGBA8;
-    m_properties.width = static_cast<uint32_t>(width);
-    m_properties.height = static_cast<uint32_t>(height);
-
-    createTexture();
-    glTextureSubImage2D(m_id, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    stbi_image_free(data);
-}
-
-Texture::Texture(const Properties& properties) :
-    m_properties{ properties }
-{
-    createTexture();
-}
-
-Texture::Texture(Texture&& other) noexcept :
-    m_properties{ other.m_properties },
-    m_id{ other.m_id } {}
-
-Texture::~Texture()
-{
-    glDeleteTextures(1, &m_id);
-}
-
-void Texture::bind(uint32_t slot) const
-{
-    glBindTextureUnit(slot, m_id);
-}
-
-void Texture::unbind(uint32_t slot) const
-{
-    glBindTextureUnit(slot, 0);
-}
-
-void Texture::setData(const void* data, size_t size, uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height) const
-{
-    if (width == 0) width = m_properties.width;
-    if (height == 0) height = m_properties.height;
-
-    assert(width * height * 4 == size);
-
-    glTextureSubImage2D(
-        m_id, 0,
-        xoffset, yoffset,
-        width, height,
-        GL_RGBA, GL_UNSIGNED_BYTE, data
+    glTextureSubImage2D(handle_.get(), 0,
+                        x_offset, y_offset,
+                        width, height,
+                        GL_RGBA, GL_UNSIGNED_BYTE, pixels.data()
     );
 }
 
-void Texture::createTexture()
-{
-    const auto& spec = m_properties.specification;
-
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
-    glTextureStorage2D(m_id, 1,
-        textureFormatToGLEnum(spec.format),
-        static_cast<int>(m_properties.width),
-        static_cast<int>(m_properties.height)
-    );
-
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, textureFilterToGLEnum(spec.minificationFilter));
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, textureFilterToGLEnum(spec.magnificationFilter));
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_R, textureWrapModeToGLEnum(spec.wrapMode));
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, textureWrapModeToGLEnum(spec.wrapMode));
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, textureWrapModeToGLEnum(spec.wrapMode));
+void Texture::bind(u32 unit) const {
+    glBindTextureUnit(unit, handle_.get());
 }
 
 } // namespace glw

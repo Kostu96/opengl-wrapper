@@ -34,7 +34,13 @@
     DO(PFNGLGETUNIFORMLOCATIONPROC,        glGetUniformLocation)       \
     DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,   glProgramUniformMatrix4fv)  \
     DO(PFNGLCREATESAMPLERSPROC,            glCreateSamplers)           \
-    DO(PFNGLDELETESAMPLERSPROC,            glDeleteSamplers)
+    DO(PFNGLDELETESAMPLERSPROC,            glDeleteSamplers)           \
+    DO(PFNGLSAMPLERPARAMETERIPROC,         glSamplerParameteri)        \
+    DO(PFNGLBINDSAMPLERPROC,               glBindSampler)              \
+    DO(PFNGLCREATETEXTURESPROC,            glCreateTextures)           \
+    DO(PFNGLTEXTURESTORAGE2DPROC,          glTextureStorage2D)         \
+    DO(PFNGLTEXTURESUBIMAGE2DPROC,         glTextureSubImage2D)        \
+    DO(PFNGLBINDTEXTUREUNITPROC,           glBindTextureUnit)
 
 #define DECLARE_OPENGL_FUNCTION(TYPE, NAME) inline TYPE NAME = nullptr;
 FOR_OPENGL_FUNCTIONS(DECLARE_OPENGL_FUNCTION)
