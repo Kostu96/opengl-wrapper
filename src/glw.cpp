@@ -1,17 +1,28 @@
 #include "glw/glw.hpp"
 
+#include <cut/exception.hpp>
+
 #include <iostream>
 #include <print>
 
-namespace glw {
+namespace {
 
-static void GLAPIENTRY OGLErrorCallback(GLenum source,
-                                        GLenum type,
-                                        GLuint id,
-                                        GLenum severity,
-                                        GLsizei /*length*/,
-                                        const GLchar* message,
-                                        const void* /*userParam*/) {
+using namespace glw;
+
+template<typename T>
+T load_gl_proc(const char* name, GLWLoadFunc func) {
+    auto fn = reinterpret_cast<T>(func(name));
+    cut::ensure(fn != nullptr, "Failed to load {}", name);
+    return fn;
+}
+
+void APIENTRY gl_error_callback(GLenum source,
+                                  GLenum type,
+                                  GLuint id,
+                                  GLenum severity,
+                                  GLsizei /*length*/,
+                                  const GLchar* message,
+                                  const void* /*user_param*/) {
     switch (id) {
     case 131185: return; // Buffer detailed info
     }
@@ -50,17 +61,20 @@ static void GLAPIENTRY OGLErrorCallback(GLenum source,
     std::println(std::cerr, "GLWDebug: {} - {} {} ({}):\n{}", source_str, type_str, severity_str, id, message);
 }
 
-bool init(GLWLoadFunc func)
+} // namespace
+
+
+namespace glw {
+
+void init(GLWLoadFunc func)
 {
-#define LOAD_OPENGL_FUNCTION(TYPE, NAME) NAME = reinterpret_cast<TYPE>(func(#NAME));
+#define LOAD_OPENGL_FUNCTION(TYPE, NAME) NAME = load_gl_proc<TYPE>(#NAME, func);
 FOR_OPENGL_FUNCTIONS(LOAD_OPENGL_FUNCTION)
 #undef LOAD_OPENGL_FUNCTION
 
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(OGLErrorCallback, nullptr);
-
-    return true;
+    glDebugMessageCallback(gl_error_callback, nullptr);
 }
 
 } // namespace glw

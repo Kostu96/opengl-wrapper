@@ -30,6 +30,7 @@ target_compile_features(glw PRIVATE cxx_std_23)
 target_include_directories(glw PUBLIC
     src/include
     third_party/glm
+    third_party/opengl_headers/include
 )
 
 target_link_libraries(glw PUBLIC

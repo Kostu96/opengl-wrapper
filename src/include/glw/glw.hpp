@@ -1,9 +1,22 @@
 #pragma once
-#include <GL/gl.h>
+
+#ifdef _WIN32
+
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+
+#endif // _WIN32
+
 #include <GL/glcorearb.h>
 
 #define FOR_OPENGL_FUNCTIONS(DO)                                       \
+    DO(PFNGLENABLEPROC,                    glEnable)                   \
     DO(PFNGLDEBUGMESSAGECALLBACKPROC,      glDebugMessageCallback)     \
+    DO(PFNGLGETINTEGERVPROC,               glGetIntegerv)              \
+    DO(PFNGLVIEWPORTPROC,                  glViewport)                 \
+    DO(PFNGLCLEARCOLORPROC,                glClearColor)               \
+    DO(PFNGLCLEARPROC,                     glClear)                    \
     DO(PFNGLCREATEBUFFERSPROC,             glCreateBuffers)            \
     DO(PFNGLDELETEBUFFERSPROC,             glDeleteBuffers)            \
     DO(PFNGLNAMEDBUFFERSTORAGEPROC,        glNamedBufferStorage)       \
@@ -38,9 +51,11 @@
     DO(PFNGLSAMPLERPARAMETERIPROC,         glSamplerParameteri)        \
     DO(PFNGLBINDSAMPLERPROC,               glBindSampler)              \
     DO(PFNGLCREATETEXTURESPROC,            glCreateTextures)           \
+    DO(PFNGLDELETETEXTURESPROC,            glDeleteTextures)           \
     DO(PFNGLTEXTURESTORAGE2DPROC,          glTextureStorage2D)         \
     DO(PFNGLTEXTURESUBIMAGE2DPROC,         glTextureSubImage2D)        \
-    DO(PFNGLBINDTEXTUREUNITPROC,           glBindTextureUnit)
+    DO(PFNGLBINDTEXTUREUNITPROC,           glBindTextureUnit)          \
+    DO(PFNGLDRAWELEMENTSPROC,              glDrawElements)
 
 #define DECLARE_OPENGL_FUNCTION(TYPE, NAME) inline TYPE NAME = nullptr;
 FOR_OPENGL_FUNCTIONS(DECLARE_OPENGL_FUNCTION)
@@ -48,9 +63,9 @@ FOR_OPENGL_FUNCTIONS(DECLARE_OPENGL_FUNCTION)
 
 namespace glw {
     
-    typedef void (*GLWApiProc)(void);
-    typedef GLWApiProc(*GLWLoadFunc)(const char* name);
+typedef void (*GLWApiProc)(void);
+typedef GLWApiProc(*GLWLoadFunc)(const char* name);
 
-    bool init(GLWLoadFunc func);
+void init(GLWLoadFunc func);
 
 } // namespace glw
