@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.24)
 
 project(glw-proj LANGUAGES CXX)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(cpp-utils)
 
@@ -9,6 +11,7 @@ find_package(OpenGL REQUIRED)
 set(BUILD_SHARED_LIBS OFF)
 set(GLM_ENABLE_CXX_20 ON)
 add_subdirectory(third_party/glm)
+set_target_properties(glm PROPERTIES FOLDER glw/third_party)
 
 add_library(glw STATIC
     src/buffer.cpp
@@ -38,5 +41,7 @@ target_link_libraries(glw PUBLIC
     glm::glm
     OpenGL::GL
 )
+
+set_target_properties(glw PROPERTIES FOLDER glw)
 
 add_library(glw::glw ALIAS glw)
