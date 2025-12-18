@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <print>
+#include <ranges>
 
 namespace {
 
@@ -25,12 +26,28 @@ GLenum to_gl_enum(Shader::Type type) {
 
 namespace glw {
 
-Shader::Shader(std::string_view source, Type type) : 
+Shader::Shader(Type type, std::span<const std::string_view> sources) :
     handle_(glCreateShader(to_gl_enum(type)), glDeleteShader) {
-    
-    const GLchar* sources[]{ source.data() };
-    const GLint lengths[]{ static_cast<GLint>(source.size()) };
-    glShaderSource(handle_.get(), 1, sources, lengths);
+
+    std::vector<std::string> line_strs;
+    std::vector<const GLchar*> gl_sources;
+    std::vector<GLint> gl_lengths;
+
+    line_strs.reserve(sources.size() - 1);
+    gl_sources.reserve(sources.size() * 2 - 1);
+    gl_lengths.reserve(sources.size() * 2 - 1);
+    for (auto [i, sv] : std::views::enumerate(sources)) {
+        if (i > 0) {
+            line_strs.push_back(std::format("\n#line 0 {}\n", i));
+            gl_sources.push_back(line_strs.back().data());
+            gl_lengths.push_back(line_strs.back().size());
+        }
+
+        gl_sources.push_back(sv.data());
+        gl_lengths.push_back(sv.size());
+    }
+
+    glShaderSource(handle_.get(), gl_sources.size(), gl_sources.data(), gl_lengths.data());
     glCompileShader(handle_.get());
 
     GLint success;

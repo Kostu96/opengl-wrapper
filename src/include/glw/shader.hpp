@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 
+#include <span>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -19,7 +20,7 @@ class Shader final :
 public:
     enum class Type { Vertex, Fragment };
 
-    Shader(std::string_view source, Type type);
+    Shader(Type type, std::span<const std::string_view> sources);
 
     u32 get_native_handle() const { return handle_.get(); }
 private:
