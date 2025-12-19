@@ -32,6 +32,7 @@ class Program final :
 public:
     Program(const std::initializer_list<Shader>& shaders);
 
+    void set_uniform_1i(std::string_view name, s32 value) const;
     void set_uniform_1f(std::string_view name, f32 value) const;
     void set_uniform_vec3f(std::string_view name, glm::vec3 value) const;
     void set_uniform_mat3f(std::string_view name, const glm::mat3& value) const;

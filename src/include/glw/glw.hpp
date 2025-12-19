@@ -45,6 +45,7 @@
     DO(PFNGLUSEPROGRAMPROC,                glUseProgram)               \
     DO(PFNGLGETACTIVEUNIFORMPROC,          glGetActiveUniform)         \
     DO(PFNGLGETUNIFORMLOCATIONPROC,        glGetUniformLocation)       \
+    DO(PFNGLPROGRAMUNIFORM1IPROC,          glProgramUniform1i)         \
     DO(PFNGLPROGRAMUNIFORM1FPROC,          glProgramUniform1f)         \
     DO(PFNGLPROGRAMUNIFORM3FPROC,          glProgramUniform3f)         \
     DO(PFNGLPROGRAMUNIFORM3FVPROC,         glProgramUniform3fv)        \

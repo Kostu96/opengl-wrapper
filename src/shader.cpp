@@ -103,6 +103,10 @@ Program::Program(const std::initializer_list<Shader>& shaders) :
     }
 }
 
+void Program::set_uniform_1i(std::string_view name, s32 value) const {
+    glProgramUniform1i(handle_.get(), get_uniform_location(name), value);
+}
+
 void Program::set_uniform_1f(std::string_view name, f32 value) const {
     glProgramUniform1f(handle_.get(), get_uniform_location(name), value);
 }
