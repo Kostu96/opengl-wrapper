@@ -5,7 +5,6 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include <print>
 #include <ranges>
 
 namespace {
@@ -102,6 +101,18 @@ Program::Program(const std::initializer_list<Shader>& shaders) :
             uniforms_[uniform_name] = location;
         }
     }
+}
+
+void Program::set_uniform_1f(std::string_view name, f32 value) const {
+    glProgramUniform1f(handle_.get(), get_uniform_location(name), value);
+}
+
+void Program::set_uniform_vec3f(std::string_view name, glm::vec3 value) const {
+    glProgramUniform3fv(handle_.get(), get_uniform_location(name), 1, glm::value_ptr(value));
+}
+
+void Program::set_uniform_mat3f(std::string_view name, const glm::mat3& value) const {
+    glProgramUniformMatrix3fv(handle_.get(), get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void Program::set_uniform_mat4f(std::string_view name, const glm::mat4& value) const {

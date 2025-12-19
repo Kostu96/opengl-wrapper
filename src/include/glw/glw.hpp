@@ -45,6 +45,10 @@
     DO(PFNGLUSEPROGRAMPROC,                glUseProgram)               \
     DO(PFNGLGETACTIVEUNIFORMPROC,          glGetActiveUniform)         \
     DO(PFNGLGETUNIFORMLOCATIONPROC,        glGetUniformLocation)       \
+    DO(PFNGLPROGRAMUNIFORM1FPROC,          glProgramUniform1f)         \
+    DO(PFNGLPROGRAMUNIFORM3FPROC,          glProgramUniform3f)         \
+    DO(PFNGLPROGRAMUNIFORM3FVPROC,         glProgramUniform3fv)        \
+    DO(PFNGLPROGRAMUNIFORMMATRIX3FVPROC,   glProgramUniformMatrix3fv)  \
     DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,   glProgramUniformMatrix4fv)  \
     DO(PFNGLCREATESAMPLERSPROC,            glCreateSamplers)           \
     DO(PFNGLDELETESAMPLERSPROC,            glDeleteSamplers)           \
