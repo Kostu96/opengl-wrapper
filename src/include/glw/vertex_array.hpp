@@ -3,8 +3,6 @@
 #include <cut/non_copyable.hpp>
 #include <cut/types.hpp>
 
-#include <vector>
-
 namespace glw {
 
 using cut::u32;
