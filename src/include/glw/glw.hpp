@@ -20,6 +20,8 @@
     DO(PFNGLCREATEBUFFERSPROC,             glCreateBuffers)            \
     DO(PFNGLDELETEBUFFERSPROC,             glDeleteBuffers)            \
     DO(PFNGLNAMEDBUFFERSTORAGEPROC,        glNamedBufferStorage)       \
+    DO(PFNGLNAMEDBUFFERSUBDATAPROC,        glNamedBufferSubData)       \
+    DO(PFNGLBINDBUFFERBASEPROC,            glBindBufferBase)           \
     DO(PFNGLCREATEVERTEXARRAYSPROC,        glCreateVertexArrays)       \
     DO(PFNGLDELETEVERTEXARRAYSPROC,        glDeleteVertexArrays)       \
     DO(PFNGLVERTEXARRAYVERTEXBUFFERPROC,   glVertexArrayVertexBuffer)  \
