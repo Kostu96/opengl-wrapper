@@ -30,7 +30,7 @@ private:
 class Program final :
     cut::NonCopyable {
 public:
-    Program(const std::initializer_list<Shader>& shaders);
+    Program(std::span<const Shader* const> shaders);
 
     void set_uniform_1i(std::string_view name, s32 value) const;
     void set_uniform_1f(std::string_view name, f32 value) const;

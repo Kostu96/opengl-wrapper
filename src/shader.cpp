@@ -61,17 +61,17 @@ Shader::Shader(Type type, std::span<const std::string_view> sources) :
     };
 }
 
-Program::Program(const std::initializer_list<Shader>& shaders) :
+Program::Program(std::span<const Shader* const> shaders) :
     handle_(glCreateProgram(), glDeleteProgram) {
 
-    for (auto& shader : shaders) {
-        glAttachShader(handle_.get(), shader.get_native_handle());
+    for (auto&& shader : shaders) {
+        glAttachShader(handle_.get(), shader->get_native_handle());
     }
 
     glLinkProgram(handle_.get());
     
-    for (auto& shader : shaders) {
-        glDetachShader(handle_.get(), shader.get_native_handle());
+    for (auto&& shader : shaders) {
+        glDetachShader(handle_.get(), shader->get_native_handle());
     }
 
     GLint success;
