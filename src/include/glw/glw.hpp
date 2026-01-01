@@ -11,68 +11,71 @@
 #include <GL/glcorearb.h>
 
 #define FOR_OPENGL_FUNCTIONS(DO)                                            \
-    DO(PFNGLENABLEPROC,                      glEnable)                      \
-    DO(PFNGLDISABLEPROC,                     glDisable)                     \
-    DO(PFNGLDEBUGMESSAGECALLBACKPROC,        glDebugMessageCallback)        \
-    DO(PFNGLGETINTEGERVPROC,                 glGetIntegerv)                 \
-    DO(PFNGLVIEWPORTPROC,                    glViewport)                    \
-    DO(PFNGLCLEARCOLORPROC,                  glClearColor)                  \
-    DO(PFNGLCLEARPROC,                       glClear)                       \
-    DO(PFNGLCREATEBUFFERSPROC,               glCreateBuffers)               \
-    DO(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers)               \
-    DO(PFNGLNAMEDBUFFERSTORAGEPROC,          glNamedBufferStorage)          \
-    DO(PFNGLNAMEDBUFFERSUBDATAPROC,          glNamedBufferSubData)          \
+    DO(PFNGLATTACHSHADERPROC,                glAttachShader)                \
     DO(PFNGLBINDBUFFERBASEPROC,              glBindBufferBase)              \
-    DO(PFNGLCREATEFRAMEBUFFERSPROC,          glCreateFramebuffers)          \
-    DO(PFNGLDELETEFRAMEBUFFERSPROC,          glDeleteFramebuffers)          \
-    DO(PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC, glCheckNamedFramebufferStatus) \
     DO(PFNGLBINDFRAMEBUFFERPROC,             glBindFramebuffer)             \
-    DO(PFNGLNAMEDFRAMEBUFFERTEXTUREPROC,     glNamedFramebufferTexture)     \
-    DO(PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC, glNamedFramebufferDrawBuffers) \
+    DO(PFNGLBINDSAMPLERPROC,                 glBindSampler)                 \
+    DO(PFNGLBINDTEXTUREUNITPROC,             glBindTextureUnit)             \
+    DO(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray)             \
+    DO(PFNGLBLITNAMEDFRAMEBUFFERPROC,        glBlitNamedFramebuffer)        \
+    DO(PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC, glCheckNamedFramebufferStatus) \
+    DO(PFNGLCLEARPROC,                       glClear)                       \
+    DO(PFNGLCLEARCOLORPROC,                  glClearColor)                  \
     DO(PFNGLCLEARNAMEDFRAMEBUFFERFVPROC,     glClearNamedFramebufferfv)     \
     DO(PFNGLCLEARNAMEDFRAMEBUFFERIVPROC,     glClearNamedFramebufferiv)     \
-    DO(PFNGLBLITNAMEDFRAMEBUFFERPROC,        glBlitNamedFramebuffer)        \
-    DO(PFNGLCREATEVERTEXARRAYSPROC,          glCreateVertexArrays)          \
-    DO(PFNGLDELETEVERTEXARRAYSPROC,          glDeleteVertexArrays)          \
-    DO(PFNGLVERTEXARRAYVERTEXBUFFERPROC,     glVertexArrayVertexBuffer)     \
-    DO(PFNGLVERTEXARRAYELEMENTBUFFERPROC,    glVertexArrayElementBuffer)    \
-    DO(PFNGLENABLEVERTEXARRAYATTRIBPROC,     glEnableVertexArrayAttrib)     \
-    DO(PFNGLVERTEXARRAYATTRIBBINDINGPROC,    glVertexArrayAttribBinding)    \
-    DO(PFNGLVERTEXARRAYATTRIBFORMATPROC,     glVertexArrayAttribFormat)     \
-    DO(PFNGLVERTEXARRAYATTRIBIFORMATPROC,    glVertexArrayAttribIFormat)    \
-    DO(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray)             \
-    DO(PFNGLCREATESHADERPROC,                glCreateShader)                \
-    DO(PFNGLDELETESHADERPROC,                glDeleteShader)                \
-    DO(PFNGLSHADERSOURCEPROC,                glShaderSource)                \
     DO(PFNGLCOMPILESHADERPROC,               glCompileShader)               \
-    DO(PFNGLGETSHADERIVPROC,                 glGetShaderiv)                 \
-    DO(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog)            \
+    DO(PFNGLCREATEBUFFERSPROC,               glCreateBuffers)               \
+    DO(PFNGLCREATEFRAMEBUFFERSPROC,          glCreateFramebuffers)          \
     DO(PFNGLCREATEPROGRAMPROC,               glCreateProgram)               \
+    DO(PFNGLCREATESAMPLERSPROC,              glCreateSamplers)              \
+    DO(PFNGLCREATESHADERPROC,                glCreateShader)                \
+    DO(PFNGLCREATETEXTURESPROC,              glCreateTextures)              \
+    DO(PFNGLCREATEVERTEXARRAYSPROC,          glCreateVertexArrays)          \
+    DO(PFNGLDEBUGMESSAGECALLBACKPROC,        glDebugMessageCallback)        \
+    DO(PFNGLDEPTHFUNCPROC,                   glDepthFunc)                   \
+    DO(PFNGLDEPTHMASKPROC,                   glDepthMask)                   \
+    DO(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers)               \
+    DO(PFNGLDELETEFRAMEBUFFERSPROC,          glDeleteFramebuffers)          \
     DO(PFNGLDELETEPROGRAMPROC,               glDeleteProgram)               \
-    DO(PFNGLATTACHSHADERPROC,                glAttachShader)                \
+    DO(PFNGLDELETESAMPLERSPROC,              glDeleteSamplers)              \
+    DO(PFNGLDELETESHADERPROC,                glDeleteShader)                \
+    DO(PFNGLDELETETEXTURESPROC,              glDeleteTextures)              \
+    DO(PFNGLDELETEVERTEXARRAYSPROC,          glDeleteVertexArrays)          \
     DO(PFNGLDETACHSHADERPROC,                glDetachShader)                \
-    DO(PFNGLLINKPROGRAMPROC,                 glLinkProgram)                 \
-    DO(PFNGLGETPROGRAMIVPROC,                glGetProgramiv)                \
-    DO(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog)           \
-    DO(PFNGLUSEPROGRAMPROC,                  glUseProgram)                  \
+    DO(PFNGLDISABLEPROC,                     glDisable)                     \
+    DO(PFNGLDRAWELEMENTSPROC,                glDrawElements)                \
+    DO(PFNGLENABLEPROC,                      glEnable)                      \
+    DO(PFNGLENABLEVERTEXARRAYATTRIBPROC,     glEnableVertexArrayAttrib)     \
     DO(PFNGLGETACTIVEUNIFORMPROC,            glGetActiveUniform)            \
+    DO(PFNGLGETINTEGERVPROC,                 glGetIntegerv)                 \
+    DO(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog)           \
+    DO(PFNGLGETPROGRAMIVPROC,                glGetProgramiv)                \
+    DO(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog)            \
+    DO(PFNGLGETSHADERIVPROC,                 glGetShaderiv)                 \
     DO(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation)          \
-    DO(PFNGLPROGRAMUNIFORM1IPROC,            glProgramUniform1i)            \
+    DO(PFNGLLINKPROGRAMPROC,                 glLinkProgram)                 \
+    DO(PFNGLNAMEDBUFFERSUBDATAPROC,          glNamedBufferSubData)          \
+    DO(PFNGLNAMEDBUFFERSTORAGEPROC,          glNamedBufferStorage)          \
+    DO(PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC, glNamedFramebufferDrawBuffers) \
+    DO(PFNGLNAMEDFRAMEBUFFERTEXTUREPROC,     glNamedFramebufferTexture)     \
     DO(PFNGLPROGRAMUNIFORM1FPROC,            glProgramUniform1f)            \
+    DO(PFNGLPROGRAMUNIFORM1IPROC,            glProgramUniform1i)            \
     DO(PFNGLPROGRAMUNIFORM3FPROC,            glProgramUniform3f)            \
     DO(PFNGLPROGRAMUNIFORM3FVPROC,           glProgramUniform3fv)           \
     DO(PFNGLPROGRAMUNIFORMMATRIX3FVPROC,     glProgramUniformMatrix3fv)     \
     DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,     glProgramUniformMatrix4fv)     \
-    DO(PFNGLCREATESAMPLERSPROC,              glCreateSamplers)              \
-    DO(PFNGLDELETESAMPLERSPROC,              glDeleteSamplers)              \
     DO(PFNGLSAMPLERPARAMETERIPROC,           glSamplerParameteri)           \
-    DO(PFNGLBINDSAMPLERPROC,                 glBindSampler)                 \
-    DO(PFNGLCREATETEXTURESPROC,              glCreateTextures)              \
-    DO(PFNGLDELETETEXTURESPROC,              glDeleteTextures)              \
+    DO(PFNGLSHADERSOURCEPROC,                glShaderSource)                \
     DO(PFNGLTEXTURESTORAGE2DPROC,            glTextureStorage2D)            \
     DO(PFNGLTEXTURESUBIMAGE2DPROC,           glTextureSubImage2D)           \
-    DO(PFNGLBINDTEXTUREUNITPROC,             glBindTextureUnit)             \
-    DO(PFNGLDRAWELEMENTSPROC,                glDrawElements)
+    DO(PFNGLTEXTURESUBIMAGE3DPROC,           glTextureSubImage3D)           \
+    DO(PFNGLUSEPROGRAMPROC,                  glUseProgram)                  \
+    DO(PFNGLVERTEXARRAYATTRIBBINDINGPROC,    glVertexArrayAttribBinding)    \
+    DO(PFNGLVERTEXARRAYATTRIBFORMATPROC,     glVertexArrayAttribFormat)     \
+    DO(PFNGLVERTEXARRAYATTRIBIFORMATPROC,    glVertexArrayAttribIFormat)    \
+    DO(PFNGLVERTEXARRAYELEMENTBUFFERPROC,    glVertexArrayElementBuffer)    \
+    DO(PFNGLVERTEXARRAYVERTEXBUFFERPROC,     glVertexArrayVertexBuffer)     \
+    DO(PFNGLVIEWPORTPROC,                    glViewport)
 
 #define DECLARE_OPENGL_FUNCTION(TYPE, NAME) inline TYPE NAME = nullptr;
 FOR_OPENGL_FUNCTIONS(DECLARE_OPENGL_FUNCTION)

@@ -30,7 +30,7 @@ GLenum to_gl_enum(TextureWrapMode wrap_mode) {
 GLenum to_gl_enum(TextureType type) {
     switch (type) {
     case TextureType::Texture2D: return GL_TEXTURE_2D;
-    case TextureType::CubeMap:   return GL_TEXTURE_CUBE_MAP;
+    case TextureType::Cubemap:   return GL_TEXTURE_CUBE_MAP;
     }
 
     throw cut::Exception("Unhandled texture format!");
@@ -40,6 +40,7 @@ GLenum to_gl_enum(TextureType type) {
 GLenum to_gl_enum(TextureFormat format) {
     switch (format) {
     using enum TextureFormat;
+    case RGB8:            return GL_RGB8;
     case RGBA8:           return GL_RGBA8;
     case R32U:            return GL_R32UI;
     case Depth24Stencil8: return GL_DEPTH24_STENCIL8;
@@ -55,8 +56,8 @@ GLenum to_gl_enum(TextureFormat format) {
 namespace glw {
 
 Sampler::Sampler(const SamplerDescription& desc) :
-    handle_(0u, [](u32 handle){ glDeleteSamplers(1, &handle); }) {
-
+    handle_(0u, [](u32 handle){ glDeleteSamplers(1, &handle); })
+{
     GLuint handle;
     glCreateSamplers(1, &handle);
     handle_.reset(handle);
@@ -74,8 +75,8 @@ void Sampler::bind(u32 unit) const {
 
 Texture::Texture(const TextureDescription &desc) :
     handle_(0u, [](u32 handle){ glDeleteTextures(1, &handle); }),
-    desc_(desc) {
-
+    desc_(desc)
+{
     GLuint handle;
     glCreateTextures(to_gl_enum(desc.type), 1, &handle);
     handle_.reset(handle);
@@ -83,17 +84,34 @@ Texture::Texture(const TextureDescription &desc) :
     glTextureStorage2D(handle, 1, to_gl_enum(desc.format), desc.width, desc.height);
 }
 
-void Texture::set_pixels(std::span<const std::byte> pixels, u16 x_offset, u16 y_offset, u16 width, u16 height) const {
+void Texture::set_pixels_2d(std::span<const std::byte> pixels, u16 channels,
+    u16 x_offset, u16 y_offset, u16 width, u16 height) const
+{
     if (width == 0) width = desc_.width;
     if (height == 0) height = desc_.height;
 
-    cut::ensure(width * height * 4 == pixels.size(), "Setting pixels partially is unsupported!");
+    cut::ensure(width * height * channels == pixels.size(), "Setting pixels partially is unsupported!");
 
     glTextureSubImage2D(handle_.get(), 0,
                         x_offset, y_offset,
                         width, height,
-                        GL_RGBA, GL_UNSIGNED_BYTE, pixels.data()
-    );
+                        channels == 4 ? GL_RGBA : GL_RGB,
+                        GL_UNSIGNED_BYTE, pixels.data());
+}
+
+void Texture::set_pixels_3d(std::span<const std::byte> pixels, u16 channels,
+    u16 x_offset, u16 y_offset, u16 z_offset, u16 width, u16 height) const
+{
+    if (width == 0) width = desc_.width;
+    if (height == 0) height = desc_.height;
+
+    cut::ensure(width * height * channels == pixels.size(), "Setting pixels partially is unsupported!");
+
+    glTextureSubImage3D(handle_.get(), 0,
+                        x_offset, y_offset, z_offset,
+                        width, height, 1,
+                        channels == 4 ? GL_RGBA : GL_RGB,
+                        GL_UNSIGNED_BYTE, pixels.data());
 }
 
 void Texture::bind(u32 unit) const {

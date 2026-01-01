@@ -37,12 +37,13 @@ private:
 
 enum class TextureType {
     Texture2D,
-    CubeMap
+    Cubemap
 };
 
 enum class TextureFormat {
     None,
     
+    RGB8,  // normalized integer
     RGBA8, // normalized integer
     R32U,  // unsigned integer
 
@@ -62,7 +63,8 @@ class Texture final :
 public:
     explicit Texture(const TextureDescription& desc);
 
-    void set_pixels(std::span<const std::byte> pixels, u16 x_offset = 0, u16 y_offset = 0, u16 width = 0, u16 height = 0) const;
+    void set_pixels_2d(std::span<const std::byte> pixels, u16 channels, u16 x_offset = 0, u16 y_offset = 0, u16 width = 0, u16 height = 0) const;
+    void set_pixels_3d(std::span<const std::byte> pixels, u16 channels, u16 x_offset = 0, u16 y_offset = 0, u16 z_offset = 0, u16 width = 0, u16 height = 0) const;
     
     void bind(u32 unit) const;
 
