@@ -44,9 +44,10 @@ enum class TextureFormat {
     None,
     
     RGBA8, // normalized integer
-    R32U,   // unsigned integer
+    R32U,  // unsigned integer
 
-    Depth24Stencil8
+    Depth24Stencil8,
+    Depth32F
 };
 
 struct TextureDescription {
@@ -64,6 +65,8 @@ public:
     void set_pixels(std::span<const std::byte> pixels, u16 x_offset = 0, u16 y_offset = 0, u16 width = 0, u16 height = 0) const;
     
     void bind(u32 unit) const;
+
+    u32 get_native_handle() const { return handle_.get(); }
 private:
     cut::AutoRelease<u32> handle_;
     TextureDescription desc_;

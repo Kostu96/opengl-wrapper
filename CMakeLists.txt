@@ -15,13 +15,13 @@ set_target_properties(glm PROPERTIES FOLDER glw/third_party)
 
 add_library(glw STATIC
     src/buffer.cpp
-    #src/framebuffer.cpp
+    src/framebuffer.cpp
     src/glw.cpp
     src/shader.cpp
     src/texture.cpp
     src/vertex_array.cpp
     src/include/glw/buffer.hpp
-    #src/include/glw/framebuffer.hpp
+    src/include/glw/framebuffer.hpp
     src/include/glw/glw.hpp
     src/include/glw/shader.hpp
     src/include/glw/texture.hpp

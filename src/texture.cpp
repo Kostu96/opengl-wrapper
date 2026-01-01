@@ -39,9 +39,11 @@ GLenum to_gl_enum(TextureType type) {
 
 GLenum to_gl_enum(TextureFormat format) {
     switch (format) {
-    case TextureFormat::RGBA8:           return GL_RGBA8;
-    case TextureFormat::R32U:            return GL_R32UI;
-    case TextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+    using enum TextureFormat;
+    case RGBA8:           return GL_RGBA8;
+    case R32U:            return GL_R32UI;
+    case Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+    case Depth32F:        return GL_DEPTH_COMPONENT32F;
     }
 
     throw cut::Exception("Unhandled texture format!");

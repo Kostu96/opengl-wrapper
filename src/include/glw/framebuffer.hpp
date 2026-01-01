@@ -1,45 +1,46 @@
 #pragma once
 #include "glw/texture.hpp"
 
-#include <cstdint>
+#include <cut/auto_release.hpp>
+#include <cut/non_copyable.hpp>
+#include <cut/types.hpp>
+
+#include <span>
 #include <vector>
 
 namespace glw {
 
-    class Framebuffer final
-    {
-    public:
-        struct Properties {
-            uint32_t width;
-            uint32_t height;
-            uint32_t samples = 1;
-            std::vector<TextureSpecification> attachmentsSpecifications;
-            
-            bool swapChainTarget = false;
-        };
+struct FramebufferDescription {
+    u16 width;
+    u16 height;
+    std::vector<TextureFormat> attachments_formats;
+};
 
-        explicit Framebuffer(const Properties& properties);
-        ~Framebuffer();
+class Framebuffer final :
+    cut::NonCopyable {
+public:
+    explicit Framebuffer(const FramebufferDescription& desc);
 
-        void bind() const;
-        void unbind() const;
+    void bind() const;
 
-        void resize(uint32_t width, uint32_t height);
-        uint32_t readPixel(uint32_t colorAttachmentIndex, uint32_t x, uint32_t y) const;
-        void clearAttachment(uint32_t attachmentIndex, int value) const;
-        void clearAttachment(uint32_t attachmentIndex, float value) const;
+    void resize(u16 width, u16 height);
+
+    //uint32_t readPixel(uint32_t colorAttachmentIndex, uint32_t x, uint32_t y) const;
+    //void clearAttachment(uint32_t attachmentIndex, int value) const;
+    //void clearAttachment(uint32_t attachmentIndex, float value) const;
         
-        const std::vector<Texture>& getAttachments() const { return m_attachments; }
-        const Properties& getProperties() const { return m_properties; }
+    const std::span<const Texture> get_attachments() const { return attachments_; }
+    const FramebufferDescription& get_description() const { return desc_; }
 
-        Framebuffer(const Framebuffer&) = delete;
-        Framebuffer& operator=(const Framebuffer&) = delete;
-    private:
-        void recreate();
+    u32 get_native_handle() const { return handle_.get(); }
 
-        Properties m_properties;
-        uint32_t m_ID;
-        std::vector<Texture> m_attachments;
-    };
+    static void bind_default();
+private:
+    void recreate();
 
-} // namespace jng
+    cut::AutoRelease<u32> handle_;
+    FramebufferDescription desc_;
+    std::vector<Texture> attachments_;
+};
+
+} // namespace glw
