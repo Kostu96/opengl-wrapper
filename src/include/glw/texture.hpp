@@ -43,9 +43,11 @@ enum class TextureType {
 enum class TextureFormat {
     None,
     
-    RGB8,  // normalized integer
-    RGBA8, // normalized integer
-    R32U,  // unsigned integer
+    RGB8,
+    RGBA8,
+    SRGB8,
+    SRGB8Alpha8,
+    R32U,
 
     Depth24Stencil8,
     Depth32F

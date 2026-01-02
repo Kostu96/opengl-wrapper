@@ -42,6 +42,8 @@ GLenum to_gl_enum(TextureFormat format) {
     using enum TextureFormat;
     case RGB8:            return GL_RGB8;
     case RGBA8:           return GL_RGBA8;
+    case SRGB8:           return GL_SRGB8;
+    case SRGB8Alpha8:     return GL_SRGB8_ALPHA8;
     case R32U:            return GL_R32UI;
     case Depth24Stencil8: return GL_DEPTH24_STENCIL8;
     case Depth32F:        return GL_DEPTH_COMPONENT32F;
