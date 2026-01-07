@@ -11,10 +11,11 @@ namespace {
 
 using namespace glw;
 
-GLenum to_gl_enum(Shader::Type type) {
+GLenum to_gl_enum(ShaderStage::Type type) {
     switch (type) {
-    case Shader::Type::Vertex:   return GL_VERTEX_SHADER;
-    case Shader::Type::Fragment: return GL_FRAGMENT_SHADER;
+    using enum ShaderStage::Type;
+    case Vertex:   return GL_VERTEX_SHADER;
+    case Fragment: return GL_FRAGMENT_SHADER;
     }
 
     throw cut::Exception("Unhandled Shader type!");
@@ -25,7 +26,7 @@ GLenum to_gl_enum(Shader::Type type) {
 
 namespace glw {
 
-Shader::Shader(Type type, std::span<const std::string_view> sources) :
+ShaderStage::ShaderStage(Type type, std::span<const std::string_view> sources) :
     handle_(glCreateShader(to_gl_enum(type)), glDeleteShader) {
 
     std::vector<std::string> line_strs;
@@ -61,7 +62,7 @@ Shader::Shader(Type type, std::span<const std::string_view> sources) :
     };
 }
 
-Program::Program(std::span<const Shader* const> shaders) :
+Shader::Shader(std::span<const ShaderStage* const> shaders) :
     handle_(glCreateProgram(), glDeleteProgram) {
 
     for (auto&& shader : shaders) {
@@ -103,31 +104,31 @@ Program::Program(std::span<const Shader* const> shaders) :
     }
 }
 
-void Program::set_uniform_1i(std::string_view name, s32 value) const {
+void Shader::set_uniform_1i(std::string_view name, s32 value) const {
     glProgramUniform1i(handle_.get(), get_uniform_location(name), value);
 }
 
-void Program::set_uniform_1f(std::string_view name, f32 value) const {
+void Shader::set_uniform_1f(std::string_view name, f32 value) const {
     glProgramUniform1f(handle_.get(), get_uniform_location(name), value);
 }
 
-void Program::set_uniform_vec3f(std::string_view name, glm::vec3 value) const {
+void Shader::set_uniform_vec3f(std::string_view name, glm::vec3 value) const {
     glProgramUniform3fv(handle_.get(), get_uniform_location(name), 1, glm::value_ptr(value));
 }
 
-void Program::set_uniform_mat3f(std::string_view name, const glm::mat3& value) const {
+void Shader::set_uniform_mat3f(std::string_view name, const glm::mat3& value) const {
     glProgramUniformMatrix3fv(handle_.get(), get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Program::set_uniform_mat4f(std::string_view name, const glm::mat4& value) const {
+void Shader::set_uniform_mat4f(std::string_view name, const glm::mat4& value) const {
     glProgramUniformMatrix4fv(handle_.get(), get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Program::bind() const {
+void Shader::bind() const {
     glUseProgram(handle_.get());
 }
 
-s32 Program::get_uniform_location(std::string_view name) const {
+s32 Shader::get_uniform_location(std::string_view name) const {
     auto loc = uniforms_.find(name);
     cut::ensure(loc != uniforms_.end(), "Uniform {} not in the cache!", name);
     return loc->second;

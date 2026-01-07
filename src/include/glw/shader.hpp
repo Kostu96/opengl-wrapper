@@ -15,22 +15,22 @@ using cut::u32;
 using cut::s32;
 using cut::f32;
 
-class Shader final :
+class ShaderStage final :
     cut::NonCopyable {
 public:
     enum class Type { Vertex, Fragment };
 
-    Shader(Type type, std::span<const std::string_view> sources);
+    ShaderStage(Type type, std::span<const std::string_view> sources);
 
     u32 get_native_handle() const { return handle_.get(); }
 private:
     cut::AutoRelease<u32> handle_;
 };
 
-class Program final :
+class Shader final :
     cut::NonCopyable {
 public:
-    Program(std::span<const Shader* const> shaders);
+    Shader(std::span<const ShaderStage* const> shaders);
 
     void set_uniform_1i(std::string_view name, s32 value) const;
     void set_uniform_1f(std::string_view name, f32 value) const;
