@@ -24,7 +24,7 @@ public:
         F32, F32_2, F32_3, F32_4
     };
 
-    VertexArray(const Buffer& vertex_buffer, const std::initializer_list<DataType>& layout);
+    VertexArray(const Buffer& vertex_buffer, std::initializer_list<DataType> layout);
 
     void set_index_buffer(const Buffer& index_buffer);
 
