@@ -43,6 +43,7 @@
     DO(PFNGLDELETEVERTEXARRAYSPROC,          glDeleteVertexArrays)          \
     DO(PFNGLDETACHSHADERPROC,                glDetachShader)                \
     DO(PFNGLDISABLEPROC,                     glDisable)                     \
+    DO(PFNGLDRAWARRAYSPROC,                  glDrawArrays)                  \
     DO(PFNGLDRAWELEMENTSPROC,                glDrawElements)                \
     DO(PFNGLENABLEPROC,                      glEnable)                      \
     DO(PFNGLENABLEVERTEXARRAYATTRIBPROC,     glEnableVertexArrayAttrib)     \
@@ -53,6 +54,7 @@
     DO(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog)            \
     DO(PFNGLGETSHADERIVPROC,                 glGetShaderiv)                 \
     DO(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation)          \
+    DO(PFNGLLINEWIDTHPROC,                   glLineWidth)                   \
     DO(PFNGLLINKPROGRAMPROC,                 glLinkProgram)                 \
     DO(PFNGLNAMEDBUFFERSUBDATAPROC,          glNamedBufferSubData)          \
     DO(PFNGLNAMEDBUFFERSTORAGEPROC,          glNamedBufferStorage)          \
