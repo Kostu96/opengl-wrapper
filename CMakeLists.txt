@@ -9,7 +9,7 @@ add_subdirectory(cpp-utils)
 find_package(OpenGL REQUIRED)
 
 set(BUILD_SHARED_LIBS OFF)
-set(GLM_ENABLE_CXX_20 ON)
+set(GLM_ENABLE_FAST_MATH ON)
 add_subdirectory(third_party/glm)
 set_target_properties(glm PROPERTIES FOLDER glw/third_party)
 
