@@ -47,12 +47,15 @@
     DO(PFNGLDRAWELEMENTSPROC,                glDrawElements)                \
     DO(PFNGLENABLEPROC,                      glEnable)                      \
     DO(PFNGLENABLEVERTEXARRAYATTRIBPROC,     glEnableVertexArrayAttrib)     \
+    DO(PFNGLGENERATETEXTUREMIPMAPPROC,       glGenerateTextureMipmap)       \
     DO(PFNGLGETACTIVEUNIFORMPROC,            glGetActiveUniform)            \
+    DO(PFNGLGETFLOATVPROC,                   glGetFloatv)                   \
     DO(PFNGLGETINTEGERVPROC,                 glGetIntegerv)                 \
     DO(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog)           \
     DO(PFNGLGETPROGRAMIVPROC,                glGetProgramiv)                \
     DO(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog)            \
     DO(PFNGLGETSHADERIVPROC,                 glGetShaderiv)                 \
+    DO(PFNGLGETSTRINGIPROC,                  glGetStringi)                  \
     DO(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation)          \
     DO(PFNGLLINEWIDTHPROC,                   glLineWidth)                   \
     DO(PFNGLLINKPROGRAMPROC,                 glLinkProgram)                 \
@@ -66,6 +69,7 @@
     DO(PFNGLPROGRAMUNIFORM3FVPROC,           glProgramUniform3fv)           \
     DO(PFNGLPROGRAMUNIFORMMATRIX3FVPROC,     glProgramUniformMatrix3fv)     \
     DO(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,     glProgramUniformMatrix4fv)     \
+    DO(PFNGLSAMPLERPARAMETERFPROC,           glSamplerParameterf)           \
     DO(PFNGLSAMPLERPARAMETERIPROC,           glSamplerParameteri)           \
     DO(PFNGLSHADERSOURCEPROC,                glShaderSource)                \
     DO(PFNGLTEXTURESTORAGE2DPROC,            glTextureStorage2D)            \

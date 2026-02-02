@@ -9,6 +9,7 @@ namespace glw {
 
 using cut::u16;
 using cut::u32;
+using cut::f32;
 
 enum class TextureFilter {
     Linear,
@@ -23,6 +24,7 @@ enum class TextureWrapMode {
 struct SamplerDescription {
     TextureFilter filter = TextureFilter::Linear;
     TextureWrapMode wrap_mode = TextureWrapMode::Repeat;
+    f32 max_anisotropy_level = 1.0f;
 };
 
 class Sampler final :
@@ -68,6 +70,8 @@ public:
     void set_pixels_2d(std::span<const std::byte> pixels, u16 channels, u16 x_offset = 0, u16 y_offset = 0, u16 width = 0, u16 height = 0) const;
     void set_pixels_3d(std::span<const std::byte> pixels, u16 channels, u16 x_offset = 0, u16 y_offset = 0, u16 z_offset = 0, u16 width = 0, u16 height = 0) const;
     
+    void generate_mipmaps() const;
+
     void bind(u32 unit) const;
 
     u32 get_native_handle() const { return handle_.get(); }

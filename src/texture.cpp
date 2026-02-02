@@ -69,6 +69,8 @@ Sampler::Sampler(const SamplerDescription& desc) :
     glSamplerParameteri(handle, GL_TEXTURE_WRAP_S, to_gl_enum(desc.wrap_mode));
     glSamplerParameteri(handle, GL_TEXTURE_WRAP_T, to_gl_enum(desc.wrap_mode));
     glSamplerParameteri(handle, GL_TEXTURE_WRAP_R, to_gl_enum(desc.wrap_mode));
+
+    glSamplerParameterf(handle, GL_TEXTURE_MAX_ANISOTROPY, desc.max_anisotropy_level);
 }
 
 void Sampler::bind(u32 unit) const {
@@ -114,6 +116,10 @@ void Texture::set_pixels_3d(std::span<const std::byte> pixels, u16 channels,
                         width, height, 1,
                         channels == 4 ? GL_RGBA : GL_RGB,
                         GL_UNSIGNED_BYTE, pixels.data());
+}
+
+void Texture::generate_mipmaps() const {
+    glGenerateTextureMipmap(handle_.get());
 }
 
 void Texture::bind(u32 unit) const {
